@@ -1,3 +1,6 @@
 data/
 *.pth
 !spec/*.pth
+__pycache__/*.*
+*.jpg
+*.png

@@ -1,34 +1,29 @@
-import torch
-from classifer import Net
+from classifer import ConvolutionalNeuralNet
+from ConvModel import ConvNet
 
-############# Use with validation dataset###########
+if __name__ == "__main__":
+    
+    #  Instantiating model
+    conv_net = ConvNet()
+    model = ConvolutionalNeuralNet(conv_net)
+    print(conv_net)
+    
+    # Get classes and split images into train, test and validation
+    train_image_paths,test_image_paths,valid_image_paths,classes = model.select_images_data_sets()
+    # Create datasets
+    train_dataset,test_dataset,valid_dataset = model.create_datasets(train_image_paths,test_image_paths,valid_image_paths,classes)
+    # Init network weights
+    model.network.apply(model.init_weights)
+    # Create dataloaders
+    train_dataloader,test_dataloader,valid_dataloader = model.create_data_loader(train_dataset,test_dataset,valid_dataset)
+    # Train model
+    log_dict = model.train(train_loader=train_dataloader,test_loader=test_dataloader,num_epochs=8,model_save_path='./best_gender_model.pth')
+    # Plot losses
+    model.plot_losses(log_dict['training_loss_per_batch'],log_dict['test_loss_per_batch'])
+    # Plot accuracy
+    model.plot_accuracy(log_dict['training_accuracy_per_epoch'],log_dict['test_accuracy_per_epoch'])
+    # Let us look at how the network performs on the whole validation dataset.
+    model.evaluate_dataset(valid_dataloader,classes,7)
+    # Show predictions on random images
 
-
-model.eval()
-start_time = time.time()
-
-with torch.no_grad():
-    running_loss = 0.
-    running_corrects = 0
-
-    for i, (inputs, labels) in enumerate(val_dataloader):
-        inputs = inputs.to(device)
-        labels = labels.to(device)
-
-        outputs = model(inputs)
-        _, preds = torch.max(outputs, 1)
-        loss = criterion(outputs, labels)
-
-        running_loss += loss.item() * inputs.size(0)
-        running_corrects += torch.sum(preds == labels.data)
-
-        if i == 0:
-            print('[Prediction Result Examples]')
-            images = torchvision.utils.make_grid(inputs[:4])
-            imshow(images.cpu(), title=[class_names[x] for x in labels[:4]])
-            images = torchvision.utils.make_grid(inputs[4:8])
-            imshow(images.cpu(), title=[class_names[x] for x in labels[4:8]])
-
-    epoch_loss = running_loss / len(val_datasets)
-    epoch_acc = running_corrects / len(val_datasets) * 100.
-    print('[Validation #{}] Loss: {:.4f} Acc: {:.4f}% Time: {:.4f}s'.format(epoch, epoch_loss, epoch_acc, time.time() - star
+    print("End")

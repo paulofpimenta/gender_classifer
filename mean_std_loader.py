@@ -54,7 +54,7 @@ class StatsFromDataSet(Dataset):
         cnt = 0
         fst_moment = torch.empty(3)
         snd_moment = torch.empty(3)
-        print("Calculating mean and std for images on folder " + self.data_path)
+        print("Calculating mean and std for images on folder '" + self.data_path + "'...")
         for images, _ in loader:
             b, c, h, w = images.shape
             nb_pixels = b * h * w
@@ -69,5 +69,4 @@ class StatsFromDataSet(Dataset):
 
         mean, std = fst_moment, torch.sqrt(
         snd_moment - fst_moment ** 2)
-        print("Calculating mean and std...")
         return mean,std
