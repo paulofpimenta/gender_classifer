@@ -58,10 +58,10 @@ model.network.load_state_dict(torch.load('./best_gender_model.pth'))
 # Download example image
 #urllib.request.urlretrieve("https://pngimg.com/uploads/face/face_PNG11752.png","woman_face.png")
 #urllib.request.urlretrieve("https://pngimg.com/uploads/face/face_PNG11761.png","man_face.png")
-urllib.request.urlretrieve("https://pngimg.com/uploads/face/face_PNG11760.png","man_face2.png")
+#urllib.request.urlretrieve("https://pngimg.com/uploads/face/face_PNG11760.png","./data/samples/man_face2.png")
 
 # Pre-process image & create a mini-batch as expected by the model
-input_image = Image.open("man_face2.png").convert('RGB')
+input_image = Image.open("./data/samples/man_face2.png").convert('RGB')
 
 preprocess = transforms.Compose([
         transforms.Resize(224),
