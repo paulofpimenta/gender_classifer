@@ -1,15 +1,11 @@
 # import libraries
 
-import time
 import torch
 from torch import optim
 import torchvision
 import torchvision.transforms as transforms
 import torch.nn.functional as F
 from torchvision import transforms
-from torch.utils.data import Dataset, DataLoader
-from torch.utils.data import Dataset
-from torchvision.io import read_image
 from torch.utils.data import DataLoader
 
 import albumentations as A
@@ -21,13 +17,13 @@ import copy
 import numpy as np
 import random
 import glob
-from tqdm import tqdm,trange
-from time import sleep
+from tqdm import tqdm
 from statistics import mean
+import torch.nn as nn
 
 from mean_std_loader import StatsFromDataSet
-import torch.nn as nn
 from Dataset import GenderDataset
+import os
 #######################################################
 #               Define Neural Net with Convolution
 #######################################################
@@ -39,7 +35,7 @@ class ConvolutionalNeuralNet():
     #A call to Compose will return a transform function that will perform image augmentation.
     #(https://albumentations.ai/docs/getting_started/image_augmentation/)
 
-    def __init__(self,network,root_path='.\\data'):
+    def __init__(self,network,root_path='data'):
       
         # Define parameters
         self.device = self.get_device()
@@ -87,6 +83,10 @@ class ConvolutionalNeuralNet():
 
         train_image_paths = [] #to store image paths in list
         classes = [] #to store class values
+
+        # Set working directory
+        current_folder = os.path.dirname(os.path.abspath(__file__))
+        os.chdir(current_folder)
 
         #1.
         # get all the paths from train_data_path and append image paths and class to to respective lists

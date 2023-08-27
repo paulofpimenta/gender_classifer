@@ -1,26 +1,19 @@
-
-
-
-import urllib3
 from ConvModel import ConvNet
 from classifer import ConvolutionalNeuralNet
 import torch
 from torchvision import transforms
-from mean_std_loader import StatsFromDataSet
 from PIL import Image
-from urllib.request import urlopen
-from PIL import Image
-import requests
-import numpy as np
-from io import StringIO
-import urllib.request
 from matplotlib import pyplot as plt
+import os
+  
 
-
+#  Instantiating model
 conv_net = ConvNet()
 model = ConvolutionalNeuralNet(conv_net)
 
-  #  Instantiating model
+# Set working directory
+current_folder = os.path.dirname(os.path.abspath(__file__))
+os.chdir(current_folder)
 
 model.network.load_state_dict(torch.load('./best_gender_model.pth'))
 
@@ -61,13 +54,14 @@ model.network.load_state_dict(torch.load('./best_gender_model.pth'))
 #urllib.request.urlretrieve("https://pngimg.com/uploads/face/face_PNG11760.png","./data/samples/man_face2.png")
 
 # Pre-process image & create a mini-batch as expected by the model
-input_image = Image.open("./data/samples/man_face2.png").convert('RGB')
+input_image = Image.open("./data/samples/me.png").convert('RGB')
 
 preprocess = transforms.Compose([
         transforms.Resize(224),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        transforms.Normalize(mean=[0.6527503132820129, 0.48301947116851807, 0.4047924280166626], 
+                             std= [0.235576793551445, 0.20688192546367645, 0.19748619198799133]),
     ])
 input_tensor = preprocess(input_image)
 input_batch = input_tensor.unsqueeze(0) 
@@ -79,6 +73,7 @@ with torch.no_grad():
     classes=['female','male']
     predicted_class = classes[prediction.item()]
     print(f'Image predicted as {predicted_class.upper()}')
+
     plt.imshow(input_image)
     plt.title(predicted_class.upper())
     plt.show(block=True)

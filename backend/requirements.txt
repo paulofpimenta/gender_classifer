@@ -1,0 +1,9 @@
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==2.0.1+cpu
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torchvision==0.15.2+cpu
+matplotlib==3.7.2
+Pillow==10.0.0
+fastapi==0.103.0
+pydantic==2.3.0
+uvicorn==0.23.2

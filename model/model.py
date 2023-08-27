@@ -17,7 +17,7 @@ if __name__ == "__main__":
     # Create dataloaders
     train_dataloader,test_dataloader,valid_dataloader = model.create_data_loader(train_dataset,test_dataset,valid_dataset)
     # Train model
-    log_dict = model.train(train_loader=train_dataloader,test_loader=test_dataloader,num_epochs=8,model_save_path='./best_gender_model.pth')
+    log_dict = model.train(train_loader=train_dataloader,test_loader=test_dataloader,num_epochs=10,model_save_path='./best_gender_model.pth')
     # Plot losses
     model.plot_losses(log_dict['training_loss_per_batch'],log_dict['test_loss_per_batch'])
     # Plot accuracy
