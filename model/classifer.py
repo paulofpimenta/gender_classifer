@@ -24,6 +24,10 @@ import torch.nn as nn
 from mean_std_loader import StatsFromDataSet
 from Dataset import GenderDataset
 import os
+from PIL import Image
+import torch.nn.functional as nnf
+
+
 #######################################################
 #               Define Neural Net with Convolution
 #######################################################
@@ -398,25 +402,7 @@ class ConvolutionalNeuralNet():
         print('Finished Training')
 
         return log_dict
-
-    # Function to test the model with a batch of images and show the labels predictions
-    def predict(self,input,target,classes,num_images_plot:int=None):
-        self.network.eval()
-        predicted_images_num = 0
-        loss_function = nn.CrossEntropyLoss()
-        #target = valid_loader.dataset[0]
-        # since we're not training, we don't need to calculate the gradients for our outputs
-        with torch.no_grad():
-            predictions = self.network(input)
-
-            # Subsetting images and label
-            predictions = predictions[:num_images_plot]
-            # Index
-            predicted_index = predictions[0].argmax(0)
-            predicted = classes[predicted_index]
-            expected = classes[target]
-
-        return predicted,expected
+    
 
     # Function to test the model with a batch of images and show the labels predictions
     def evaluate_dataset(self,valid_loader:DataLoader,classes,num_images_plot:int=None):
@@ -460,7 +446,40 @@ class ConvolutionalNeuralNet():
 
             print(f'Accuracy of the network on {len(valid_loader.dataset)} validation images: {selected_images_acc} %')
         
-        
+    
+    def predict(self,image: Image):
+        # Pre-process image & create a mini-batch as expected by the model
+      
+        preprocess = transforms.Compose([
+                 transforms.Resize(224),
+                 transforms.CenterCrop(224),
+                 transforms.ToTensor(),
+                 transforms.Normalize(mean=[0.6527503132820129, 0.48301947116851807, 0.4047924280166626], 
+                                     std= [0.235576793551445, 0.20688192546367645, 0.19748619198799133]),
+             ])
+        input_tensor = preprocess(image)
+        input_batch = input_tensor.unsqueeze(0) 
+
+        self.network.eval()
+    
+        with torch.no_grad():
+            # Get outputs (as logits)
+            output = self.network(input_batch)
+            # Convert logits to softmax
+            probability = nnf.softmax(output, dim=1)
+            top_prob, top_class = probability.topk(1, dim = 1)
+            # Get predictions
+            _,prediction = torch.max(output, 1)
+            classes=['female','male']
+            predicted_class = classes[prediction.item()]
+            #Saving probability of prediction
+            pred_prob = top_prob.item()
+
+            #Title and response
+            response = {predicted_class.upper():str(pred_prob)}
+            
+            return response
+                
         # Test model
     # Function to show the images
     def images_show(self,img,title):
@@ -501,3 +520,10 @@ class ConvolutionalNeuralNet():
         plt.legend(['Train','Test'])
         plt.title('Train vs Test Accuracy')
         plt.show(block=False)
+    
+    def plot_prediction(self,prediction,image):
+        title = [*prediction.keys()][0].upper() + " => P: " + "{:,.2f} %".format(float([*prediction.values()][0]) * 100)
+        # Plot
+        plt.imshow(image)
+        plt.title(title)
+        plt.show(block=True)
