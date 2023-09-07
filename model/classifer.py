@@ -522,7 +522,7 @@ class ConvolutionalNeuralNet():
         plt.show(block=False)
     
     def plot_prediction(self,prediction,image):
-        title = [*prediction.keys()][0].upper() + " => P: " + "{:,.2f} %".format(float([*prediction.values()][0]) * 100)
+        title = [*prediction.keys()][0].upper() + " => Probability: " + "{:,.2f} %".format(float([*prediction.values()][0]) * 100)
         # Plot
         plt.imshow(image)
         plt.title(title)

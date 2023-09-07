@@ -4,32 +4,42 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
+import axios from 'axios';
 
 function App() {
   
   const [modelsLoaded, setModelsLoaded] = React.useState(false);
   const [captureVideo, setCaptureVideo] = React.useState(false);
   const [faceDetected, setFaceDetected] = React.useState(false);
+  
   const [capturedImage, setCapturedImage] = React.useState(false);
+  const [greeting, setGreeting] = React.useState("");
+  const [prediction, setPrediction] = React.useState();
+  const [newImgPathBase64, setNewImgPathBase64] = React.useState('')
 
   const videoRef = React.useRef();
   const videoHeight = 480;
   const videoWidth = 640;
   const canvasRef = React.useRef();
-  const [newImgPathBase64, setNewImgPathBase64] = React.useState('')
+  
 
 
   React.useEffect(() => {
 
     const loadModels = async () => {
       const MODEL_URL = '/models';
-      console.log("MODL URL : ", MODEL_URL)
-
+      const api = async () => {
+        const greetObj = await axios.get("http://localhost:8000", {
+          method: "GET"
+        });
+        setGreeting(greetObj.data);
+      };
       Promise.all([
         faceapi.nets.tinyFaceDetector.load(MODEL_URL),
         faceapi.nets.faceLandmark68Net.load(MODEL_URL),
         faceapi.nets.faceRecognitionNet.load(MODEL_URL),
         //faceapi.nets.faceExpressionNet.load(MODEL_URL),
+        api(),
       ]).then(setModelsLoaded(true));
     }
     loadModels();
@@ -90,29 +100,26 @@ function App() {
       var objectURL = URL.createObjectURL(blob);
       // Assign blob to image
       img.src = objectURL;
-      const displaySize = {
-        width: videoRef.current.width,
-        height: videoRef.current.height
-      };
       
-      const resizeDetection = faceapi.resizeResults(detection, displaySize);
+      
+      //const displaySize = {
+      //  width: videoRef.current.width,
+      //  height: videoRef.current.height
+      //};
+      
+      //const resizeDetection = faceapi.resizeResults(detection, displaySize);
       // faceapi.draw.drawFaceLandmarks(canvasRef.current, resizeDetections);
-      canvasRef.current
-        .getContext("2d")
-        .clearRect(0, 0, displaySize.width, displaySize.height);
-      faceapi.draw.drawDetections(canvasRef.current, resizeDetection);
+      //canvasRef.current
+      //  .getContext("2d")
+      //  .clearRect(0, 0, displaySize.width, displaySize.height);
+      //faceapi.draw.drawDetections(canvasRef.current, resizeDetection);
   
       console.log(
         `Width ${detection.box._width} and Height ${detection.box._height}`
       );
       
-      console.log(detection)
       extractFaceFromBox(img, detection.box);
-      
-      // Get prediction from API
-      const formData = new FormData();
-
-      formData.append('File', img);
+    
 
       //extractFace(videoRef, x, y, width, height);
     } else {
@@ -121,7 +128,6 @@ function App() {
 
   }
 
-};
 
 
   async function extractFaceFromBox(imageRef, box) {
@@ -144,33 +150,33 @@ function App() {
       //});
       setNewImgPathBase64(outputImage.src);
 
-      // setPic(faceImages.toDataUrl);
-      console.log("face found ");
-      //document.body.appendChild(outputImage);
+      // Create a blob from cropped image and send to
+      let blob = await fetch(outputImage.src).then(r => r.blob());
+
+
+      const preds = await handleSubmission(blob)
+      if (preds) setPrediction(preds)
 
     }
   }
 
-  const handleSubmission = (image) => {
-    const formData = new FormData();
-
-    formData.append('File', image);
-
-    fetch(
-        'https://localhost:8000/image',
-        {
-            method: 'POST',
-            body: formData,
-        }
-    )
-        .then((response) => response.json())
-        .then((result) => {
-            console.log('Success:', result);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
+  const handleSubmission = async (file) => {
+    const formData = new FormData()
+    formData.append('file', file);
+    const postData = {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Accept: 'application/json',
+      },
+    }
+    await fetch("http://localhost:8000/image", postData)
+    .then(response => response.json())
+    .then(object => {const json = {"gender":Object.keys(object)[0], "p":Object.values(object)[0]}
+                    setPrediction(json)})
+    .catch((error) => { console.error(error); });
   };
+
 
 
   const closeWebcam = () => {
@@ -182,6 +188,7 @@ function App() {
   return (
     <Container>
       <Container style={{ textAlign: 'center', padding: '10px' }}>
+        {greeting ? <Container>API in online </Container> : <>API in offline </>}
         {
           captureVideo && modelsLoaded ?
             <Button onClick={closeWebcam} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
@@ -211,20 +218,22 @@ function App() {
           <>
           </>
       }
-      { faceDetected ?
+      {captureVideo ?
         <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-          <Button onClick={screenShot} onChange={uploadPicture} style={{ cursor: 'pointer', backgroundColor: 'blue', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
+          <Button onClick={screenShot} disabled={!faceDetected} style={{ cursor: 'pointer', backgroundColor: 'blue', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
             Detect gender
           </Button>
-        </Container> : 
-        <></>
-      } 
-
+        </Container>
+      : <></>
+      }
 
       <Container> 
         { capturedImage ? 
             <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-              <img src={newImgPathBase64} alt=''/>
+              <img src={newImgPathBase64} width="200" height="230" alt=''/>
+              {prediction ? 
+                <Container>Predicted as {prediction.gender} with a probability of {prediction.p} %  </Container> : <>Fetching predictions...</>
+              }
             </Container> : 
             <></>
         }

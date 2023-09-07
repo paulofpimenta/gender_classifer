@@ -1,10 +1,12 @@
 import io
 from typing import Union
 from fastapi import FastAPI, UploadFile
+from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import os
 import sys
+from pydantic import parse_obj_as
 import torch
 from PIL import Image
 import torchvision.transforms as transforms
@@ -29,20 +31,24 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:8000",
-    "http://localhost:3000"
+    "http://localhost:3000",
 ]
+
+# Allow these methods to be used
+methods = ["GET", "POST"]
+
+# Only these headers are allowed
+#headers = ["Content-Type", "Authorization"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=methods,
     allow_headers=["*"],
 )
 
 # Declare entry points
-
-
 @app.get("/",response_class=JSONResponse)
 def read_root():
     response = {"Hello": "World"}
@@ -51,17 +57,16 @@ def read_root():
 
 @app.post("/image")
 async def upload_file(file: Union[UploadFile, None] = None):
-    
     if not file:
+        print("File type :", type(file))
         return {"message": "No upload file sent"}
     else:
         request_object_content = await file.read()
-        
+
         input_image = Image.open(io.BytesIO(request_object_content)).convert("RGB")
              
         prediction = model.predict(input_image)
-
-        return {"filename": file.filename, "prediction" : prediction}
+        return JSONResponse(prediction)
 
 
 @app.get("/items/{item_id}")
