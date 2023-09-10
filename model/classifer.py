@@ -21,11 +21,12 @@ from tqdm import tqdm
 from statistics import mean
 import torch.nn as nn
 
-from mean_std_loader import StatsFromDataSet
-from Dataset import GenderDataset
 import os
 from PIL import Image
 import torch.nn.functional as nnf
+
+from model.mean_std_loader import StatsFromDataSet
+from model.Dataset import GenderDataset
 
 
 #######################################################

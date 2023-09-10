@@ -188,14 +188,16 @@ function App() {
   return (
     <Container>
       <Container style={{ textAlign: 'center', padding: '10px' }}>
-        {greeting ? <Container>API in online </Container> : <>API in offline </>}
+        <Container>
+          {greeting ? <p>API in online </p>: <p>API in offline </p> }
+        </Container>
         {
           captureVideo && modelsLoaded ?
             <Button onClick={closeWebcam} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
               Close Webcam
             </Button>
             :
-            <Button onClick={startVideo} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
+            <Button onClick={startVideo} disabled={greeting} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
               Open Webcam
             </Button>
         }

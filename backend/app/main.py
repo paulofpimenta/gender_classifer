@@ -1,25 +1,22 @@
 import io
 from typing import Union
 from fastapi import FastAPI, UploadFile
-from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import os
 import sys
-from pydantic import parse_obj_as
 import torch
 from PIL import Image
-import torchvision.transforms as transforms
 
-# Add root folder to system path
-root_folder = os.path.abspath(os.path.join(__file__ ,"../../../model"))
-sys.path.append(root_folder)
+# append the path of the parent directory
+import os, sys
 
-from model import ConvModel,classifer
+from model.ConvModel import ConvNet
+from model.classifer import ConvolutionalNeuralNet
 
 #  Instantiating and loac model
-conv_net = ConvModel.ConvNet()
-model = classifer.ConvolutionalNeuralNet(conv_net)
+conv_net = ConvNet()
+model = ConvolutionalNeuralNet(conv_net)
 model.network.load_state_dict(torch.load('./best_gender_model.pth'))
 
 

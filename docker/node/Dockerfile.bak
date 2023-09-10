@@ -1,0 +1,15 @@
+FROM node:12.14.1-alpine
+
+ENV NODE_ENV=production
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+COPY ./frontend/package.json ./frontend/package-lock.json /usr/src/app/
+
+RUN npm install --production --no-progress
+
+COPY . .
+
+CMD [ "npm", "run-script", "build" ]
