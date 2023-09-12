@@ -3,6 +3,7 @@ data/
 __pycache__/*.*
 *.jpg
 *.png
+.vscode
 
 
 ### Python ###

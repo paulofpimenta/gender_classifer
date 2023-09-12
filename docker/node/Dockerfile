@@ -19,3 +19,4 @@ RUN ls /usr/src/front
 
 FROM nginx:1.15-alpine
 COPY --from=build /usr/src/front/build /usr/share/nginx/html
+RUN chmod -R 755 /usr/share/nginx/html
