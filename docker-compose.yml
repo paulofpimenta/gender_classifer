@@ -26,6 +26,10 @@ services:
   nginx:
     container_name: "nginx"
     build: ./docker/nginx
+    args:
+        - v ~/docker-nginx/html:/usr/share/nginx/html 
+        - v ~/docker-nginx/default.conf:/etc/nginx/conf.d/default.conf 
+        - d nginx
     ports:
       - 80:80
     volumes:
@@ -33,7 +37,3 @@ services:
     depends_on:
       - api
       - web
-    args:
-      - v ~/docker-nginx/html:/usr/share/nginx/html 
-      - v ~/docker-nginx/default.conf:/etc/nginx/conf.d/default.conf 
-      - d nginx
