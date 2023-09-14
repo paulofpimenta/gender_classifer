@@ -3,13 +3,7 @@ FROM nginx:1.15-alpine
 
 WORKDIR /usr/share/nginx/html
 
-COPY /usr/src/front/build /usr/share/nginx/html
-
-RUN chmod -R 755 /usr/share/nginx/html
-
 RUN rm /etc/nginx/conf.d/default.conf
-
-COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Configuration du pare-feu
 
@@ -21,6 +15,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 #RUN adduser -D -H -u 1000 -s /bin/bash nginx
 
 #EXPOSE 443
+
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
