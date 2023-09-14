@@ -46,13 +46,13 @@ app.add_middleware(
 )
 
 # Declare entry points
-@app.get("/",response_class=JSONResponse)
+@app.get("/api",response_class=JSONResponse)
 def read_root():
     response = {"Hello": "World"}
     return response
 
 
-@app.post("/image")
+@app.post("/api/image")
 async def upload_file(file: Union[UploadFile, None] = None):
     if not file:
         print("File type :", type(file))
@@ -64,8 +64,3 @@ async def upload_file(file: Union[UploadFile, None] = None):
              
         prediction = model.predict(input_image)
         return JSONResponse(prediction)
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
