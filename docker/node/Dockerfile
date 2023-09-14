@@ -8,7 +8,7 @@ WORKDIR /usr/src/front
 
 COPY ./frontend/package.json ./frontend/yarn.lock /usr/src/front/
 
-#RUN yarn install --production --no-progress
+RUN yarn install --production --no-progress
 
 COPY ./frontend/ /usr/src/front/
 
