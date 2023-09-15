@@ -13,7 +13,7 @@ function App() {
   const [faceDetected, setFaceDetected] = React.useState(false);
   
   const [capturedImage, setCapturedImage] = React.useState(false);
-  const [greeting, setGreeting] = React.useState("");
+  const [greeting, setGreeting] = React.useState();
   const [prediction, setPrediction] = React.useState();
   const [newImgPathBase64, setNewImgPathBase64] = React.useState('')
 
@@ -199,7 +199,7 @@ function App() {
             :
             <Container>
             {greeting ?
-            <Button onClick={startVideo} disabled={greeting} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
+            <Button onClick={startVideo} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
               Open Webcam
             </Button>: <></>
             }
