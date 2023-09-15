@@ -197,9 +197,13 @@ function App() {
               Close Webcam
             </Button>
             :
+            <Container>
+            {greeting ?
             <Button onClick={startVideo} disabled={greeting} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
               Open Webcam
-            </Button>
+            </Button>: <></>
+            }
+            </Container>
         }
         
       </Container>
