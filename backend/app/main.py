@@ -38,13 +38,6 @@ methods = ["GET", "POST"]
 # Only these headers are allowed
 #headers = ["Content-Type", "Authorization"]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=methods,
-    allow_headers=["*"],
-)
 
 # Declare entry points
 @app.get("/api",response_class=JSONResponse)
@@ -65,3 +58,12 @@ async def upload_file(file: Union[UploadFile, None] = None):
              
         prediction = model.predict(input_image)
         return JSONResponse(prediction)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=methods,
+    allow_headers=["*"],
+)
