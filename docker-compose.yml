@@ -23,6 +23,7 @@ services:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
 
+
   # nginx:
   #   container_name: "nginx"
   #   build: ./docker/nginx
