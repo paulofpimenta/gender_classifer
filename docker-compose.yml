@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: ./docker/api/Dockerfile
     ports:
-      - "8000:80"
+      - 8000:80
     volumes:
       - ./backend:/usr/src/app
 
@@ -18,13 +18,22 @@ services:
       context: .
       dockerfile: ./docker/node/Dockerfile
     ports:
-      - "80:80"
+      - 80:80
       - 443:443
     restart: always
-#    volumes:
-#      - ./frontend:/usr/src/app
-#     - /usr/src/app/node_modules
+  #   volumes:
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
 
+  # certbot:
+  #   container_name: "certbot"
+  #   image: certbot/certbot:latest
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  #   command: certbot certonly --nginx -d --webroot -w /var/www/certbot --email app@ouicodedata.com -d app1.ouicodedata.com--rsa-key-size 4096 --agree-tos --force-renewal
 
  
 
