@@ -20,20 +20,18 @@ services:
     ports:
       - 80:80
       - 443:443
-    restart: always
-  #   volumes:
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
+    restart: unless-stopped
+    volumes:
+       - ./data/certbot/conf:/etc/letsencrypt
+       - ./data/certbot/www:/var/www/certbot
 
-  # certbot:
-  #   container_name: "certbot"
-  #   image: certbot/certbot:latest
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-  #   command: certbot certonly --nginx -d --webroot -w /var/www/certbot --email app@ouicodedata.com -d app1.ouicodedata.com--rsa-key-size 4096 --agree-tos --force-renewal
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
  
 
