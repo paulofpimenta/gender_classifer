@@ -23,15 +23,15 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
-      - ${PWD}:/letsencrypt
-      - ${PWD}/certs:/etc/letsencrypt
+      - ${PWD}:/letsencrypt:rw
+      - ${PWD}/certs:/etc/letsencrypt:rw
 
   certbot:
     container_name: "certbot"
     image: certbot/certbot
     volumes:
-      - ${PWD}:/letsencrypt
-      - ${PWD}/certs:/etc/letsencrypt
+      - ${PWD}:/letsencrypt:rw
+      - ${PWD}/certs:/etc/letsencrypt:rw
     command: certonly --webroot --agree-tos --renew-by-default --text --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com
     depends_on:
       - api
