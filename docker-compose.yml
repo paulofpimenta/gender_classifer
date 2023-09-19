@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: ./docker/api/Dockerfile
     ports:
-      - 8000:8000
+      - "8000:80"
     volumes:
       - ./backend:/usr/src/app
 
@@ -18,22 +18,11 @@ services:
       context: .
       dockerfile: ./docker/node/Dockerfile
     ports:
-      - 80:80
-      - 443:443
-    restart: unless-stopped
+      - "80:80"
     volumes:
-       - ./data/certbot/conf:/etc/letsencrypt
-       - ./data/certbot/www:/var/www/certbot
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
 
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt
-      - ./data/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-
- 
 
   # nginx:
   #   container_name: "nginx"
