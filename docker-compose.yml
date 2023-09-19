@@ -28,7 +28,7 @@ services:
 
   certbot:
     container_name: "certbot"
-    image: certbot/certbot:1.8.0
+    image: certbot/certbot
     volumes:
       - ${PWD}:/letsencrypt
       - ${PWD}/certs:/etc/letsencrypt
