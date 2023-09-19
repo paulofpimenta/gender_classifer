@@ -14,7 +14,7 @@ COPY ./frontend/ /usr/src/front/
 
 RUN yarn run build
 
-FROM nginx:1.15-alpine
+FROM jonasal/nginx-certbot:latest
 
 COPY --from=build /usr/src/front/build /usr/share/nginx/html
 COPY docker/nginx/nginx.conf /etc/nginx/conf.d/default.conf
