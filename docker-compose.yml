@@ -35,7 +35,7 @@ services:
       - ${PWD}:/letsencrypt:rw
       - ${PWD}/certs:/etc/letsencrypt:rw
     #command: certonly --webroot --agree-tos --renew-by-default --text --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com
-    command: certonly --webroot --non-interactive --staging --agree-tos --email pfpimenta@gmail.com -d app1.ouicodedata.com -d www.app1.ouicodedata.com
+    command: certonly --webroot --non-interactive --staging --agree-tos --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com 
     #command:  certonly -d app1.ouicodedata.com
     depends_on:
       - api
