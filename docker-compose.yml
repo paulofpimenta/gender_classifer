@@ -32,9 +32,7 @@ services:
     volumes:
       - ${PWD}:/letsencrypt
       - ${PWD}/certs:/etc/letsencrypt
-    command: certboot certonly --webroot --agree-tos --renew-by-default \
-            --server https://acme-v02.api.letsencrypt.org/directory --text --email pfpimenta@gmail.com -w /letsencrypt \
-            -d app1.ouicodedata.com
+    command: certboot certonly --webroot --agree-tos --renew-by-default --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com
     depends_on:
       - api
       - web
