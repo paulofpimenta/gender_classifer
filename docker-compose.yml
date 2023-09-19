@@ -23,6 +23,9 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
+      - ${PWD}:/letsencrypt
+      - ${PWD}/certs:/etc/letsencrypt
+
   certbot:
     image: certbot/certbot:latest
     volumes:
