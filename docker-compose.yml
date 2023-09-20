@@ -12,7 +12,6 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - ./certs:/etc/letsencrypt
-      - ./etc/ssl/certs:/etc/ssl/certs
   web:
     container_name: "web"
     build:
@@ -26,6 +25,8 @@ services:
       - /usr/src/app/node_modules
       - .:/letsencrypt # for certboot challenges
       - ./certs:/etc/letsencrypt # for letsencrypt certificates
+      - ./etc/ssl/certs:/etc/ssl/certs
+
   
   # certbot:
   #   container_name: "certbot"
