@@ -23,8 +23,8 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
-      - ./:/letsencrypt:row # for certboot challenges
-      - ./certs:/etc/letsencrypt:ro # for letsencrypt certificates
+      - .:/letsencrypt:ro # for certboot challenges
+      - ./certs:/certs:ro # for letsencrypt certificates
 #    command: openssl req -nodes -new -x509 -subj "/CN=localhost" -keyout ${PWD}/website.key -out ${PWD}/certs/website.crt
 
 
@@ -33,7 +33,7 @@ services:
   #   image: certbot/certbot
   #   volumes:
   #     - .:/letsencrypt:rw
-  #     - ./certs:/etc/letsencrypt:rw
+  #     - ./certs:/certs:rw
   #   #command: certonly --webroot --agree-tos --renew-by-default --text --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com
   #   command: certonly --webroot --non-interactive --staging --agree-tos --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com 
   #   #command:  certonly -d app1.ouicodedata.com
