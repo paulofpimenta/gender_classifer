@@ -19,7 +19,6 @@ FROM nginx:1.15-alpine
 COPY --from=build /usr/src/front/build /usr/share/nginx/html
 COPY docker/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN restorecon -v -R /etc/nginx/letsencrypt
 
 EXPOSE 80
 
