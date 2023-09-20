@@ -23,8 +23,8 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
-      - ${PWD}:/letsencrypt:rw
-      - ${PWD}/certs:/etc/letsencrypt:rw
+      - ./:/letsencrypt:rw
+      - ./certs:/etc/letsencrypt:rw
 #    command: openssl req -nodes -new -x509 -subj "/CN=localhost" -keyout ${PWD}/website.key -out ${PWD}/certs/website.crt
 
 
