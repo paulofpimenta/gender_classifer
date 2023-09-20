@@ -28,15 +28,15 @@ services:
 #    command: openssl req -nodes -new -x509 -subj "/CN=localhost" -keyout ${PWD}/website.key -out ${PWD}/certs/website.crt
 
 
-  certbot:
-    container_name: "certbot"
-    image: certbot/certbot
-    volumes:
-      - .:/letsencrypt:rw
-      - ./certs:/etc/letsencrypt:rw
-    #command: certonly --webroot --agree-tos --renew-by-default --text --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com
-    command: certonly --webroot --non-interactive --staging --agree-tos --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com 
-    #command:  certonly -d app1.ouicodedata.com
-    depends_on:
-      - api
-      - web
+  # certbot:
+  #   container_name: "certbot"
+  #   image: certbot/certbot
+  #   volumes:
+  #     - .:/letsencrypt:rw
+  #     - ./certs:/etc/letsencrypt:rw
+  #   #command: certonly --webroot --agree-tos --renew-by-default --text --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com
+  #   command: certonly --webroot --non-interactive --staging --agree-tos --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com 
+  #   #command:  certonly -d app1.ouicodedata.com
+  #   depends_on:
+  #     - api
+  #     - web
