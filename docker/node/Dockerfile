@@ -18,7 +18,7 @@ FROM nginx:1.15-alpine
 
 COPY --from=build /usr/src/front/build /usr/share/nginx/html
 COPY docker/nginx/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --chmod=777 ./certs/ /etc/letsencrypt/
+COPY ./certs /etc/letsencrypt
 
 EXPOSE 80
 
