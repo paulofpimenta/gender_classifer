@@ -22,7 +22,6 @@ services:
       - 443:443
     volumes:
       - ./frontend:/usr/src/app
-      - /usr/src/app/node_modules
       - .:/letsencrypt # for certboot challenges
       - ./certs:/etc/letsencrypt # for letsencrypt certificates
       - ./etc/ssl/certs:/etc/ssl/certs
