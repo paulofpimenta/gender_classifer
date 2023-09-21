@@ -27,16 +27,16 @@ services:
       - ./etc/ssl/certs:/etc/ssl/certs
 
   
-  certbot:
-    container_name: "certbot"
-    image: certbot/certbot
-    volumes:
-      - .:/letsencrypt
-      - ./certs:/etc/letsencrypt
-    #command: certonly --webroot --agree-tos --renew-by-default --text --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com
-    #command: certonly --webroot --non-interactive --preferred-challenges http-01 --server https://acme-v02.api.letsencrypt.org/directory --staging --agree-tos --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com -d www.app1.ouicodedata.com 
-    #command:  certonly -d app1.ouicodedata.com
-    command: certonly --webroot -w /letsencrypt -d app1.ouicodedata.com -d www.app1.ouicodedata.com --agree-tos
-    depends_on:
-      - api
-      - web
+  # certbot:
+  #   container_name: "certbot"
+  #   image: certbot/certbot
+  #   volumes:
+  #     - .:/letsencrypt
+  #     - ./certs:/etc/letsencrypt
+  #   #command: certonly --webroot --agree-tos --renew-by-default --text --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com
+  #   #command: certonly --webroot --non-interactive --preferred-challenges http-01 --server https://acme-v02.api.letsencrypt.org/directory --staging --agree-tos --email pfpimenta@gmail.com -w /letsencrypt -d app1.ouicodedata.com -d www.app1.ouicodedata.com 
+  #   #command:  certonly -d app1.ouicodedata.com
+  #   command: certonly --webroot -w /letsencrypt -d app1.ouicodedata.com -d www.app1.ouicodedata.com --agree-tos
+  #   depends_on:
+  #     - api
+  #     - web
