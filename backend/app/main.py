@@ -70,9 +70,9 @@ app.add_middleware(
 )
 
 if __name__ == '__main__':
-    Popen(['python', '-m', 'https_redirect'])  # Add this
+    #Popen(['python', '-m', 'https_redirect'])  # Add this
     uvicorn.run(
         'main:app', port=443, host='0.0.0.0',
-        reload=True, reload_dirs=['html_files'],
+        reload=True,
         ssl_keyfile='/etc/letsencrypt/live/app1.ouicodedata.com/privkey.pem',
         ssl_certfile='/etc/letsencrypt/live/app1.ouicodedata.com/fullchain.pem')
