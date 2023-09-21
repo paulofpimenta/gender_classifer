@@ -64,4 +64,4 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=methods,
     allow_headers=["*"],
-)
+    expose_headers=["*"])
