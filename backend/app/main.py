@@ -27,7 +27,6 @@ origins = [
     "http://localhost",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    "https://127.0.0.1:8000",
     "http://localhost:3000",
     "http://app1.ouicodedata.com:8000"
 ]
