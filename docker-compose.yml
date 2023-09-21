@@ -9,7 +9,6 @@ services:
       dockerfile: ./docker/api/Dockerfile
     ports:
       - 8000:8000
-      - 443:443
     volumes:
       - ./backend:/usr/src/app
       - ./certs:/etc/letsencrypt

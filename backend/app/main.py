@@ -1,5 +1,4 @@
 import io
-from subprocess import Popen
 from typing import Union
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,8 +8,6 @@ from PIL import Image
 
 # append the path of the parent directory
 import os, sys
-
-import uvicorn
 
 from model.ConvModel import ConvNet
 from model.classifer import ConvolutionalNeuralNet
@@ -68,11 +65,3 @@ app.add_middleware(
     allow_methods=methods,
     allow_headers=["*"],
 )
-
-if __name__ == '__main__':
-    #Popen(['python', '-m', 'https_redirect'])  # Add this
-    uvicorn.run(
-        'main:app', port=443, host='0.0.0.0',
-        reload=True,
-        ssl_keyfile='/etc/letsencrypt/live/app1.ouicodedata.com/privkey.pem',
-        ssl_certfile='/etc/letsencrypt/live/app1.ouicodedata.com/fullchain.pem')
