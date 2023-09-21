@@ -29,8 +29,9 @@ function App() {
     const loadModels = async () => {
       const MODEL_URL = '/models';
       const api = async () => {
-        const greetObj = await axios.get("/api", {
-          method: "GET"
+        const greetObj = await axios({
+          method: "get",
+          url: 'http://127.0.0.1:8000/api'
         });
         setGreeting(greetObj.data);
       };
