@@ -2,7 +2,7 @@ version: "3.9"
 name: gender-classifier
 
 services:
-  api:
+  fastapi:
     container_name: "api"
     build:
       context: .
