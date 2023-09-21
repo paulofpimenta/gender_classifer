@@ -29,7 +29,7 @@ function App() {
     const loadModels = async () => {
       const MODEL_URL = '/models';
       const api = async () => {
-        const greetObj = await axios.get("http://app1.ouicodedata.com:8000/api", {
+        const greetObj = await axios.get("app1.ouicodedata.com:8000/api", {
           method: "GET"
         });
         setGreeting(greetObj.data);
@@ -170,7 +170,7 @@ function App() {
         Accept: 'application/json',
       },
     }
-    await fetch("http://app1.ouicodedata.com:8000/api/image", postData)
+    await fetch("app1.ouicodedata.com:8000/api/image", postData)
     .then(response => response.json())
     .then(object => {const json = {"gender":Object.keys(object)[0], "p":Object.values(object)[0]}
                     setPrediction(json)})
