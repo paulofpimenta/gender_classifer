@@ -2,8 +2,8 @@ version: "3.9"
 name: gender-classifier
 
 services:
-  fastapi:
-    container_name: "fastapi"
+  api:
+    container_name: "api"
     build:
       context: .
       dockerfile: ./docker/api/Dockerfile
