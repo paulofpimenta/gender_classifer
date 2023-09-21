@@ -22,10 +22,10 @@ ENV PYTHONPATH="/usr/src/gender_detect"
 
 EXPOSE 8000
 
-RUN uvicorn main:app --ssl-certfile=/etc/letsencrypt/live/app1.ouicodedata.com/fullchain.pem\
-    --ssl-keyfile=/etc/letsencrypt/live/app1.ouicodedata.com/privkey.pem --host 0.0.0.0 --port 443 &\
-    uvicorn api:app --host 0.0.0.0 --port 80
-#CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# RUN uvicorn main:app --ssl-certfile=/etc/letsencrypt/live/app1.ouicodedata.com/fullchain.pem\
+#     --ssl-keyfile=/etc/letsencrypt/live/app1.ouicodedata.com/privkey.pem --host 0.0.0.0 --port 443 &\
+#     uvicorn api:app --host 0.0.0.0 --port 80
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "ssl-keyfile", "/etc/letsencrypt/live/app1.ouicodedata.com/privkey.pem"]
 
     #"--ssl-keyfile=/etc/letsencrypt/live/app1.ouicodedata.com/privkey.pem", \
     #"--ssl-certfile=/etc/letsencrypt/live/app1.ouicodedata.com/fullchain.pem"]
