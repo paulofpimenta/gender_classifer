@@ -15,12 +15,12 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir --upgrade -r /usr/src/gender_detect/requirements.txt
 
 #Install certs
-RUN apt-get update && \
-    apt-get install -y libnss3-tools && \
-    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash && \
-    brew install mkcert && \
-    mkcert -install && \
-    mkcert localhost 127.0.0.1 ::1
+#RUN apt-get update && \
+#    apt-get install -y libnss3-tools && \
+#    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash && \
+#    brew install mkcert && \
+#    mkcert -install && \
+#    mkcert localhost 127.0.0.1 ::1
 
 COPY ./backend/app /usr/src/gender_detect
 COPY ./model/ /usr/src/gender_detect/model
