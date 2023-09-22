@@ -22,11 +22,10 @@ model.network.load_state_dict(torch.load('./best_gender_model.pth'))
 app = FastAPI()
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
     "http://localhost",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://127.0.0.1:8000/api",
     "http://localhost:3000",
 ]
 
