@@ -94,7 +94,7 @@ function App() {
       const imageCapture = new ImageCapture(track)
       
       //Create a new image
-      var img = new Image()
+      var img = new Image(detection.box._width,detection.box._width)
       //Crea a blob
       const blob = await imageCapture.takePhoto();
       var objectURL = URL.createObjectURL(blob);
@@ -141,7 +141,7 @@ function App() {
     } else {
       setCapturedImage(true)
       const outputImage = new Image();
-      console.log("Face canvas : ",faceImages[0],"imageref :", faceImages)
+      //console.log("Face canvas : ",faceImages[0],"imageref :", faceImages)
       outputImage.src = faceImages[0].toDataURL();
       //faceImages.forEach((cnv) => {
       //  console.log("Face : ", cnv)
