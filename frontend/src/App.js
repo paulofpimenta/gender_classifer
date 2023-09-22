@@ -177,8 +177,6 @@ function App() {
     .catch((error) => { console.error(error); });
   };
 
-
-
   const closeWebcam = () => {
     videoRef.current.pause();
     videoRef.current.srcObject.getTracks()[0].stop();
