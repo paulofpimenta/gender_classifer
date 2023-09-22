@@ -21,6 +21,7 @@ function App() {
   const videoHeight = 480;
   const videoWidth = 640;
   const canvasRef = React.useRef();
+  
 
 
   React.useEffect(() => {
@@ -28,7 +29,7 @@ function App() {
     const loadModels = async () => {
       const MODEL_URL = '/models';
       const api = async () => {
-        const greetObj = await axios.get("http://127:0.0.1:8000/api", {
+        const greetObj = await axios.get("/api", {
           method: "GET"
         });
         setGreeting(greetObj.data);
