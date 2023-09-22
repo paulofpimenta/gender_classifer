@@ -22,8 +22,6 @@ function App() {
   const videoWidth = 640;
   const canvasRef = React.useRef();
 
-  //axios.defaults.baseURL = 'http://127:0.0.1:8000';
-
 
 
   React.useEffect(() => {
@@ -31,7 +29,8 @@ function App() {
     const loadModels = async () => {
       const MODEL_URL = '/models';
       const api = async () => {
-        const greetObj = await axios.get("/api", {
+        const greetObj = await axios({
+          baseURL: "http://127:0.0.1:8000",
           method: "GET"
         });
         setGreeting(greetObj.data);
