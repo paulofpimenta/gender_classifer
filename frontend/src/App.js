@@ -31,6 +31,7 @@ function App() {
       const api = async () => {
         const greetObj = await axios({
           baseURL: "http://127:0.0.1:8000",
+          url: '/api',
           method: "GET"
         });
         setGreeting(greetObj.data);
