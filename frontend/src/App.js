@@ -21,14 +21,13 @@ function App() {
   const videoWidth = 640;
   const canvasRef = React.useRef();
   const count = 0;
-  const urlBase = "http://127.0.0.1:8000"
 
   React.useEffect(() => {
 
     const loadModels = async () => {
       const MODEL_URL = '/models';
       const api = async () => {
-        fetch(urlBase + "/api")
+        fetch("http://127.0.0.1:8000/api")
         .then(response => response.json())
         .then(data=> {
             setGreeting(data);
@@ -156,7 +155,7 @@ function App() {
         Accept: 'application/json',
       },
     }
-    fetch(urlBase + "/api/image", postData)
+    fetch("http://127.0.0.1:8000/api/image", postData)
     .then(response => response.json())
     .then(object => {const json = {"gender":Object.keys(object)[0], "p":Object.values(object)[0]}
                     setPrediction(json)})
