@@ -14,14 +14,6 @@ COPY ./backend/requirements.txt /usr/src/gender_detect/requirements.txt
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir --upgrade -r /usr/src/gender_detect/requirements.txt
 
-#Install certs
-#RUN apt-get update && \
-#    apt-get install -y libnss3-tools && \
-#    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash && \
-#    brew install mkcert && \
-#    mkcert -install && \
-#    mkcert localhost 127.0.0.1 ::1
-
 COPY ./backend/app /usr/src/gender_detect
 COPY ./model/ /usr/src/gender_detect/model
 COPY ./certs/ /etc/letsencrypt
@@ -30,9 +22,9 @@ ENV PYTHONPATH="/usr/src/gender_detect"
 
 EXPOSE 8000
 
-CMD ["uvicorn","main:app","--host", "0.0.0.0", "--port", "8000"]
-    #"--ssl-keyfile","/etc/letsencrypt/live/app1.ouicodedata.com/privkey.pem",\
-    #"--ssl-certfile","/etc/letsencrypt/live/app1.ouicodedata.com/fullchain.pem" ]
+CMD ["uvicorn","main:app","--host", "0.0.0.0", "--port", "8000",\
+    "--ssl-keyfile","/etc/letsencrypt/live/app1.ouicodedata.com/privkey.pem",\
+    "--ssl-certfile","/etc/letsencrypt/live/app1.ouicodedata.com/fullchain.pem" ]
 
 #"--ssl-keyfile","./key.pem",\
 #"--ssl-certfile","./cert.pem" ]
