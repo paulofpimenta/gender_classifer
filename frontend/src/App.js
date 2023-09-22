@@ -94,34 +94,20 @@ function App() {
       const imageCapture = new ImageCapture(track)
       
       //Create a new image
-      var img = new Image(detection.box._width,detection.box._width)
+      var img = new Image(detection.imageWidth,detection.imageHeight)
       //Crea a blob
       const blob = await imageCapture.takePhoto();
       var objectURL = URL.createObjectURL(blob);
       // Assign blob to image
       img.src = objectURL;
       
-      
-      //const displaySize = {
-      //  width: videoRef.current.width,
-      //  height: videoRef.current.height
-      //};
-      
-      //const resizeDetection = faceapi.resizeResults(detection, displaySize);
-      // faceapi.draw.drawFaceLandmarks(canvasRef.current, resizeDetections);
-      //canvasRef.current
-      //  .getContext("2d")
-      //  .clearRect(0, 0, displaySize.width, displaySize.height);
-      //faceapi.draw.drawDetections(canvasRef.current, resizeDetection);
   
       console.log(
-        `Width ${detection.box._width} and Height ${detection.box._height}`
+        `Width ${detection.imageWidth} and Height ${detection.imageHeight}`
       );
-      
+      console.log("detection : ",detection)
       extractFaceFromBox(img, detection.box);
     
-
-      //extractFace(videoRef, x, y, width, height);
     } else {
       setFaceDetected(false)
     }
@@ -234,7 +220,7 @@ function App() {
       <Container> 
         { capturedImage ? 
             <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-              <img src={newImgPathBase64} width="200" height="230" alt=''/>
+              <img src={newImgPathBase64} width="224" height="224" alt=''/>
               {prediction ? 
                 <Container>Predicted as {prediction.gender} with a probability of {prediction.p} %  </Container> : <>Fetching predictions...</>
               }
