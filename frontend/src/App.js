@@ -4,7 +4,6 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import axios from 'axios';
 
 function App() {
   
@@ -21,7 +20,8 @@ function App() {
   const videoHeight = 480;
   const videoWidth = 640;
   const canvasRef = React.useRef();
-  
+  const count = 0;
+
 
 
   React.useEffect(() => {
@@ -29,10 +29,11 @@ function App() {
     const loadModels = async () => {
       const MODEL_URL = '/models';
       const api = async () => {
-        const greetObj = await axios.get("/api", {
-          method: "GET"
+        fetch("http://127.0.0.1:8000/api")
+        .then(response => response.json())
+        .then(data=> {
+            setGreeting(data);
         });
-        setGreeting(greetObj.data);
       };
       Promise.all([
         faceapi.nets.tinyFaceDetector.load(MODEL_URL),
@@ -43,7 +44,7 @@ function App() {
       ]).then(setModelsLoaded(true));
     }
     loadModels();
-  }, []);
+  }, [count]);
 
   const startVideo = () => {
     setCaptureVideo(true);
