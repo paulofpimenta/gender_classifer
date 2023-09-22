@@ -15,7 +15,7 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir --upgrade -r /usr/src/gender_detect/requirements.txt
 
 #Install certs
-RUN sudo apt install libnss3-tools && \
+RUN apt install libnss3-tools && \
     brew install mkcert && \
     mkcert -install && \
     mkcert localhost 127.0.0.1 ::1
