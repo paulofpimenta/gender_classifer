@@ -23,17 +23,12 @@ function App() {
   const canvasRef = React.useRef();
 
 
-
   React.useEffect(() => {
 
     const loadModels = async () => {
       const MODEL_URL = '/models';
       const api = async () => {
-        const greetObj = await axios({
-          baseURL: "http://127:0.0.1:8000",
-          url: '/api',
-          method: "GET"
-        });
+        const greetObj = await axios.get("http://127:0.0.1:8000/api");
         setGreeting(greetObj.data);
       };
       Promise.all([
