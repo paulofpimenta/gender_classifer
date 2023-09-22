@@ -17,6 +17,7 @@ RUN pip install --upgrade pip && \
 #Install certs
 RUN apt-get update && \
     apt-get install -y libnss3-tools && \
+    /bin/bash -c '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)' && \
     brew install mkcert && \
     mkcert -install && \
     mkcert localhost 127.0.0.1 ::1
