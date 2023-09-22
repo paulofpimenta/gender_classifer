@@ -20,29 +20,25 @@ function App() {
   const videoHeight = 480;
   const videoWidth = 640;
   const canvasRef = React.useRef();
-  const count = 0;
 
   React.useEffect(() => {
 
     const loadModels = async () => {
       const MODEL_URL = '/models';
-      const api = async () => {
-        fetch("http://127.0.0.1:8000/api")
+      await fetch("http://127.0.0.1:8000/api")
         .then(response => response.json())
         .then(data=> {
             setGreeting(data);
-        });
-      };
+      });
       Promise.all([
         faceapi.nets.tinyFaceDetector.load(MODEL_URL),
         faceapi.nets.faceLandmark68Net.load(MODEL_URL),
         faceapi.nets.faceRecognitionNet.load(MODEL_URL),
         //faceapi.nets.faceExpressionNet.load(MODEL_URL),
-        api(),
       ]).then(setModelsLoaded(true));
     }
     loadModels();
-  }, [count]);
+  }, []);
 
   const startVideo = () => {
     setCaptureVideo(true);
