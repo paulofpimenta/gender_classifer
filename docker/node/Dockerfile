@@ -1,4 +1,4 @@
-FROM node:18-alpine as build
+FROM node:18-alpine
 
 ENV NODE_ENV=production
 
@@ -9,6 +9,8 @@ WORKDIR /usr/src/app
 COPY ./frontend/package.json ./frontend/yarn.lock /usr/src/app/
 
 RUN yarn install --production --no-progress
+
+RUN chmod -R 755 ./frontend/build
 
 COPY . .
 

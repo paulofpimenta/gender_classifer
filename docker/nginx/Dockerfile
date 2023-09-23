@@ -1,5 +1,6 @@
 # production environment
-FROM nginx:1.15-alpine
+FROM nginx:alpine
+
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
