@@ -55,6 +55,6 @@
     "fs": false,
     "os": false,
     "path": false
-  },
-  "proxy": "http://localhost:8000"
+  }
+  //"proxy": "http://localhost:8000"
 }
