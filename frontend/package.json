@@ -56,5 +56,5 @@
     "os": false,
     "path": false
   },
-  "proxy": "http://api:80/api"
+  "proxy": "http://localhost:8000"
 }
