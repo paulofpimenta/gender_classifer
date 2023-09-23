@@ -13,7 +13,7 @@ services:
       - ./backend:/usr/src/app
       - ./certs:/etc/letsencrypt
     networks:
-      data-service-network
+      - mynet
 
   web:
     container_name: "web"
@@ -29,8 +29,9 @@ services:
       - ./certs:/etc/letsencrypt # for letsencrypt certificates
       - ./etc/ssl/certs:/etc/ssl/certs
     networks:
-      -  data-service-network
-  
+      - mynet
+
+
   # certbot:
   #   container_name: "certbot"
   #   image: certbot/certbot
