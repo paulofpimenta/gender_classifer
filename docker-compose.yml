@@ -9,7 +9,6 @@ services:
       dockerfile: ./docker/api/Dockerfile
     ports:
       - 8000:8000
-    network_mode: "host"
     volumes:
       - ./backend:/usr/src/app
       - ./certs:/etc/letsencrypt
@@ -23,6 +22,7 @@ services:
     ports:
       - 80:80
       - 443:443
+    network_mode: "host"
     volumes:
       - ./frontend:/usr/src/app
       - .:/letsencrypt # for certboot challenges
