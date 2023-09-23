@@ -12,7 +12,6 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - ./certs:/etc/letsencrypt
-    
 
   web:
     container_name: "web"
@@ -21,14 +20,25 @@ services:
       dockerfile: ./docker/node/Dockerfile
     ports:
       - 80:80
-      - 443:443
     volumes:
       - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+
+  nginx:
+    container_name: "nginx"
+    build: ./docker/nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./frontend/build:/usr/share/nginx/html
       - .:/letsencrypt # for certboot challenges
       - ./certs:/etc/letsencrypt # for letsencrypt certificates
       - ./etc/ssl/certs:/etc/ssl/certs
-    links:
-      - "fastapi" 
+    depends_on:
+      - fastapi
+      - web  
+      
   
   # certbot:
   #   container_name: "certbot"
