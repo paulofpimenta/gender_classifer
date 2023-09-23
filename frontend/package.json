@@ -55,5 +55,6 @@
     "fs": false,
     "os": false,
     "path": false
-  }
+  },
+  "proxy": "http://api:80/api"
 }
