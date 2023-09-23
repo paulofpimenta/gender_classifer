@@ -10,8 +10,6 @@ COPY ./frontend/package.json ./frontend/yarn.lock /usr/src/app/
 
 RUN yarn install --production --no-progress
 
-RUN chmod -R 755 ./frontend/build
-
 COPY . .
 
 CMD [ "yarn", "build" ]
