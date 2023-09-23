@@ -29,7 +29,7 @@ origins = [
     "http://127.0.0.1:8000",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://app1.ouicodedata.com:8000"
+    "http://app1.ouicodedata.com"
 ]
 
 # Allow these methods to be used
