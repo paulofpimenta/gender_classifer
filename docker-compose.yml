@@ -3,17 +3,17 @@ name: gender-classifier
 
 services:
   fastapi:
-    container_name: "fastapi"
+    container_name: "api"
     build:
       context: .
       dockerfile: ./docker/api/Dockerfile
     ports:
       - 8000:8000
+    network_mode: "host"
     volumes:
       - ./backend:/usr/src/app
       - ./certs:/etc/letsencrypt
-    networks:
-      - mynet
+    
 
   web:
     container_name: "web"
@@ -28,10 +28,8 @@ services:
       - .:/letsencrypt # for certboot challenges
       - ./certs:/etc/letsencrypt # for letsencrypt certificates
       - ./etc/ssl/certs:/etc/ssl/certs
-    networks:
-      - mynet
 
-
+  
   # certbot:
   #   container_name: "certbot"
   #   image: certbot/certbot
