@@ -28,7 +28,7 @@ services:
       - .:/letsencrypt # for certboot challenges
       - ./certs:/etc/letsencrypt # for letsencrypt certificates
       - ./etc/ssl/certs:/etc/ssl/certs
-     networks:
+    networks:
       -  data-service-network
   
   # certbot:
