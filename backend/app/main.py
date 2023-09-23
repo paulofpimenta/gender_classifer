@@ -30,6 +30,7 @@ origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://app1.ouicodedata.com"
+    "https://app1.ouicodedata.com"
 ]
 
 # Allow these methods to be used
@@ -37,6 +38,14 @@ methods = ["GET", "POST"]
 
 # Only these headers are allowed
 #headers = ["Content-Type", "Authorization"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[origins],
+    allow_credentials=True,
+    allow_methods=methods,
+    allow_headers=["*"],
+    expose_headers=["*"])
 
 
 # Declare entry points
@@ -60,10 +69,3 @@ async def upload_file(file: Union[UploadFile, None] = None):
         return JSONResponse(prediction)
 
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=methods,
-    allow_headers=["*"],
-    expose_headers=["*"])
