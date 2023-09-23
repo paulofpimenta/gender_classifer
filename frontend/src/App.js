@@ -25,7 +25,7 @@ function App() {
 
     const loadModels = async () => {
       const MODEL_URL = '/models';
-      await fetch("http://localhost:80/api")
+      await fetch("http://localhost:8000/api")
         .then(response => response.json())
         .then(data=> {
             setGreeting(data);
@@ -151,7 +151,7 @@ function App() {
         Accept: 'application/json',
       },
     }
-    fetch("http://localhost:80/api/image", postData)
+    fetch("http://localhost:8000/api/image", postData)
     .then(response => response.json())
     .then(object => {const json = {"gender":Object.keys(object)[0], "p":Object.values(object)[0]}
                     setPrediction(json)})
