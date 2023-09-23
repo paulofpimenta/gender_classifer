@@ -2,8 +2,8 @@ version: "3.9"
 name: gender-classifier
 
 services:
-  api:
-    container_name: "api"
+  fastapi:
+    container_name: "fastapi"
     build:
       context: .
       dockerfile: ./docker/api/Dockerfile
@@ -12,6 +12,9 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - ./certs:/etc/letsencrypt
+    networks:
+      data-service-network
+
   web:
     container_name: "web"
     build:
@@ -25,7 +28,8 @@ services:
       - .:/letsencrypt # for certboot challenges
       - ./certs:/etc/letsencrypt # for letsencrypt certificates
       - ./etc/ssl/certs:/etc/ssl/certs
-
+     networks:
+      -  data-service-network
   
   # certbot:
   #   container_name: "certbot"
