@@ -191,13 +191,13 @@ function App() {
       {
         captureVideo ?
           modelsLoaded ?
-              <Container fluid style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+              <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
                 <video ref={videoRef} height={videoHeight} width={videoWidth} onPlay={handleVideoOnPlay} 
                         style={{ borderRadius: '10px' }} />
                 <canvas ref={canvasRef} style={{ position: 'absolute' }} />
               </Container>
               :
-            <Container fluid>Loading...</Container>
+            <Container >Loading...</Container>
           :
           <>
           </>
