@@ -4,6 +4,8 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Button';
+
 
 function App() {
   
@@ -165,7 +167,7 @@ function App() {
   }
 
   return (
-    <Container>
+    <Container fluid>
       <Container style={{ textAlign: 'center', padding: '10px' }}>
         <Container>
           {greeting ? <p>API in online </p>: <p>API in offline </p> }
@@ -215,7 +217,7 @@ function App() {
       <Container> 
         { capturedImage ? 
             <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-              <img src={newImgPathBase64} width="224" height="224" alt=''/>
+              <Image src={newImgPathBase64} width="224" height="224" alt=''/>
               {prediction ? 
                 <Container>Predicted as {prediction.gender} with a probability of {prediction.p} %  </Container> : <>Fetching predictions...</>
               }
