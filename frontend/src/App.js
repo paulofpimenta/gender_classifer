@@ -4,8 +4,6 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import Image from 'react-bootstrap/Button';
-
 
 function App() {
   
@@ -191,15 +189,12 @@ function App() {
       {
         captureVideo ?
           modelsLoaded ?
-            <Container>
-              <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+              <Container fluid style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
                 <video ref={videoRef} height={videoHeight} width={videoWidth} onPlay={handleVideoOnPlay} 
                         style={{ borderRadius: '10px' }} />
                 <canvas ref={canvasRef} style={{ position: 'absolute' }} />
               </Container>
-              
-            </Container>        
-            :
+              :
             <Container>Loading...</Container>
           :
           <>
@@ -214,12 +209,12 @@ function App() {
       : <></>
       }
 
-      <Container> 
+      <Container > 
         { capturedImage ? 
-            <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-              <Image src={newImgPathBase64} width="224" height="224" alt=''/>
+            <Container>
+              <img src={newImgPathBase64} alt='' style={{float:"left", paddingRight: "5px"}}/>
               {prediction ? 
-                <Container>Predicted as {prediction.gender} with a probability of {prediction.p} %  </Container> : <>Fetching predictions...</>
+                <span>Predicted as {prediction.gender} with a probability of {Number(prediction.p).toFixed(2)} %  </span> : <><span>Fetching predictions...</span></>
               }
             </Container> : 
             <></>
