@@ -88,8 +88,8 @@ function App() {
       const track = videoRef.current.srcObject.getVideoTracks()[0]
       const imageCapture = new ImageCapture(track)
       
-      //Create a new image
-      var img = new Image(detection.imageWidth,detection.imageHeight)
+      //Create a new image with the same size of the video cam
+      var img = new Image(videoWidth,videoHeight)
       //Crea a blob
       const blob = await imageCapture.takePhoto();
       var objectURL = URL.createObjectURL(blob);
@@ -100,7 +100,7 @@ function App() {
       console.log(
         `Width ${detection.imageWidth} and Height ${detection.imageHeight}`
       );
-      console.log("detection : ",detection)
+      console.log("detection : ",img)
       extractFaceFromBox(img, detection.box);
     
     } else {
@@ -113,7 +113,7 @@ function App() {
 
   async function extractFaceFromBox(imageRef, box) {
     const regionsToExtract = [
-      new faceapi.Rect(box.x, box.y, box.width, box.height)
+      new faceapi.Rect(box.x + 10, box.y - 20 , box.width + 10 , box.height + 20)
     ];
     let faceImages = await faceapi.extractFaces(imageRef, regionsToExtract);
     
@@ -132,10 +132,12 @@ function App() {
       setNewImgPathBase64(outputImage.src);
 
       // Create a blob from cropped image and send to
-      let blob = await fetch(outputImage.src).then(r => r.blob());
+      let blob_image = await fetch(outputImage.src).then(r => r.blob());
+      
+      //The canvas of the extracted image
+      //document.body.appendChild(faceImages[0]);
 
-
-      const preds = await handleSubmission(blob)
+      const preds = await handleSubmission(blob_image)
       if (preds) setPrediction(preds)
 
     }
@@ -195,7 +197,7 @@ function App() {
                 <canvas ref={canvasRef} style={{ position: 'absolute' }} />
               </Container>
               :
-            <Container>Loading...</Container>
+            <Container fluid>Loading...</Container>
           :
           <>
           </>
@@ -211,10 +213,10 @@ function App() {
 
       <Container > 
         { capturedImage ? 
-            <Container>
+            <Container fluid style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
               <img src={newImgPathBase64} alt='' style={{float:"left", paddingRight: "5px"}}/>
               {prediction ? 
-                <span>Predicted as {prediction.gender} with a probability of {Number(prediction.p).toFixed(2)} %  </span> : <><span>Fetching predictions...</span></>
+                <span>Predicted as <strong>{prediction.gender}</strong> with a probability of <strong>{Number(prediction.p).toFixed(2)} %</strong>  </span> : <><span>Fetching predictions...</span></>
               }
             </Container> : 
             <></>
