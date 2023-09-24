@@ -1,5 +1,5 @@
-from classifer import ConvolutionalNeuralNet
 from ConvModel import ConvNet
+from model.classifer import ConvolutionalNeuralNet
 
 if __name__ == "__main__":
     

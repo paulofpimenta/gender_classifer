@@ -510,7 +510,7 @@ class ConvolutionalNeuralNet():
         plt.ylabel('Batch')
         plt.legend(['Test'])
         plt.title('Test loss per batch')
-        plt.show(block=False)
+        plt.show(block=True)
     
     def plot_accuracy(self,train_acc,test_acc):
         plt.figure("Accuracy")
@@ -520,7 +520,7 @@ class ConvolutionalNeuralNet():
         plt.ylabel('Epoch')
         plt.legend(['Train','Test'])
         plt.title('Train vs Test Accuracy')
-        plt.show(block=False)
+        plt.show(block=True)
     
     def plot_prediction(self,prediction,image):
         title = [*prediction.keys()][0].upper() + " => Probability: " + "{:,.2f} %".format(float([*prediction.values()][0]) * 100)
