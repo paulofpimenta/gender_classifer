@@ -1,5 +1,6 @@
 # import libraries
 
+from sklearn.model_selection import KFold
 import torch
 from torch import optim
 import torchvision
@@ -298,7 +299,65 @@ class ConvolutionalNeuralNet():
         torch.nn.init.xavier_uniform_(module.weight)
         module.bias.data.fill_(0.01)
 
+    
+    # Define the training function
+    def train_kfold(self,model, device, train_loader, optimizer, epoch):
+        model.train()
+        for batch_idx, (data, target) in enumerate(train_loader):
+            data, target = data.to(device), target.to(device)
+            optimizer.zero_grad()
+            output = model(data)
+            loss = nn.functional.nll_loss(output, target)
+            loss.backward()
+            optimizer.step()
+
     # Define train model
+    def train_k_fold(self,train_dataset,test_dataset):
+        # Initialize the k-fold cross validation
+        kf = KFold(n_splits=5, shuffle=True)
+
+        # Loop through each fold
+        for fold, (train_idx, test_idx) in enumerate(kf.split(train_dataset)):
+            print(f"Fold {fold + 1}")
+            print("-------")
+
+            # Define the data loaders for the current fold
+            train_loader = DataLoader(
+                dataset=train_dataset,
+                batch_size=self.batch_size,
+                sampler=torch.utils.data.SubsetRandomSampler(train_idx),
+            )
+            test_loader = DataLoader(
+                dataset=test_dataset,
+                batch_size=self.batch_size,
+                sampler=torch.utils.data.SubsetRandomSampler(test_idx),
+            )
+
+            # Initialize the model and optimizer
+            optimizer = optim.SGD(self.network.parameters(), lr=0.01, momentum=0.5)
+
+            # Train the model on the current fold
+            for epoch in range(1, 11):
+                self.train_kfold(self.network, self.device, train_loader, optimizer, epoch)
+
+            # Evaluate the model on the test set
+            self.network.eval()
+            test_loss = 0
+            correct = 0
+            with torch.no_grad():
+                for data, target in test_loader:
+                    data, target = data.to(self.device), target.to(self.device)
+                    output = self.network(data)
+                    test_loss += nn.functional.nll_loss(output, target, reduction="sum").item()
+                    pred = output.argmax(dim=1, keepdim=True)
+                    correct += pred.eq(target.view_as(pred)).sum().item()
+
+            test_loss /= len(test_loader.dataset)
+            accuracy = 100.0 * correct / len(test_loader.dataset)
+
+            # Print the results for the current fold
+            print(f"Test set: Average loss: {test_loss:.4f}, Accuracy: {correct}/{len(test_loader.dataset)} ({accuracy:.2f}%)\n")
+            return [accuracy,test_loss]
 
     def train(self,train_loader:DataLoader,test_loader:DataLoader,num_epochs:int=20,model_save_path:str='./best_gender_model.pth'):
 

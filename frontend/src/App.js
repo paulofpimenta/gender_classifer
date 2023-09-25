@@ -196,11 +196,8 @@ function App() {
                         style={{ borderRadius: '10px' }} />
                 <canvas ref={canvasRef} style={{ position: 'absolute' }} />
               </Container>
-              :
-            <Container >Loading...</Container>
-          :
-          <>
-          </>
+              : <Container >Loading...</Container>
+          :<></>
       }
       {captureVideo ?
         <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
@@ -208,20 +205,19 @@ function App() {
             Detect gender
           </Button>
         </Container>
-      : <></>
+        : <></>
       }
 
-      <Container > 
-        { capturedImage ? 
-            <Container fluid style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-              <img src={newImgPathBase64} alt='' style={{float:"left", paddingRight: "5px"}}/>
-              {prediction ? 
-                <span>Predicted as <strong>{prediction.gender}</strong> with a probability of <strong>{Number(prediction.p).toFixed(2)} %</strong>  </span> : <><span>Fetching predictions...</span></>
-              }
-            </Container> : 
-            <></>
-        }
-      </Container>
+      { capturedImage ? 
+        <Container fluid style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+          <img src={newImgPathBase64} alt='' style={{float:"left", paddingRight: "5px"}}/>
+          {prediction ? 
+            <span>Predicted as <strong>{prediction.gender}</strong> with a probability of <strong>{Number(prediction.p).toFixed(2)} %</strong>  </span> 
+            : <> <span>Fetching predictions...</span></>
+          }
+        </Container> 
+        :<></>
+      }
 
     </Container>
   );
