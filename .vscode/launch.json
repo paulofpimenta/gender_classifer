@@ -9,20 +9,13 @@
             "type": "python",
             "request": "launch",
             "module": "uvicorn",
-            "cwd": "${workspaceFolder}/backend/app/",
             "args": [
-                "main:app",
-                "--reload"
+                "app.main:app",
+                "--reload",
+                "--port",
+                "8000"
             ],
             "jinja": true,
-            "justMyCode": true
-        },
-        {
-            "name": "Python: Current File",
-            "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal",
             "justMyCode": true
         }
     ]

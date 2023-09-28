@@ -9,16 +9,14 @@ if __name__ == "__main__":
     print(conv_net)
     
     # Get classes and split images into train, test and validation
-    train_image_paths,test_image_paths,valid_image_paths,classes = model.select_images_data_sets()
+    train_image_paths,test_image_paths,classes = model.select_images_data_sets(extra_test_set=False)
     # Create datasets
-    train_dataset,test_dataset,valid_dataset = model.create_datasets(train_image_paths,test_image_paths,valid_image_paths,classes)
-    # Init network weights
-    model.network.apply(model.init_weights)
+    train_dataset,test_dataset = model.create_datasets(train_image_paths,test_image_paths,classes)
     # Create dataloaders
-    train_dataloader,test_dataloader,valid_dataloader = model.create_data_loader(train_dataset,test_dataset,valid_dataset)
+    #train_dataloader,test_dataloader = model.create_data_loader(train_dataset,test_dataset)
     # Train model
     #log_dict = model.train(train_loader=train_dataloader,test_loader=test_dataloader,num_epochs=10,model_save_path='./best_gender_model.pth')
-    test = model.train_k_fold(train_dataset)
+    test = model.train_k_fold(train_dataset,test_dataset,num_epochs=5,num_folds=5)
     # Plot losses
     #model.plot_losses(log_dict['training_loss_per_batch'],log_dict['test_loss_per_batch'])
     # Plot accuracy

@@ -7,7 +7,7 @@ import torchvision
 import torchvision.transforms as transforms
 import torch.nn.functional as F
 from torchvision import transforms
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader,ConcatDataset
 
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
@@ -79,7 +79,7 @@ class ConvolutionalNeuralNet():
         return train_transforms, test_transforms
 
 
-    def select_images_data_sets(self):
+    def select_images_data_sets(self,extra_test_set=False):
         ####################################################
         #       Create Train, Valid and Test sets
         ####################################################
@@ -125,12 +125,14 @@ class ConvolutionalNeuralNet():
         test_image_paths = list(flatten(test_image_paths))
         random.shuffle(test_image_paths)
 
-        # Create validation set from test dataset
-        test_image_paths, valid_image_paths = test_image_paths[:int(0.8*len(test_image_paths))], test_image_paths[int(0.8*len(test_image_paths)):] 
-
-
-        print("Train dataset size: {}\nTest dataset size: {}\nValidation dataset size: {}".format(len(train_image_paths), len(test_image_paths),len(valid_image_paths)))
-        return train_image_paths,test_image_paths,valid_image_paths,classes
+        # Create validation set from test dataset, if necessary
+        if extra_test_set : 
+            test_image_paths, valid_image_paths = test_image_paths[:int(0.8*len(test_image_paths))], test_image_paths[int(0.8*len(test_image_paths)):] 
+            print("Train dataset size: {}\nTest dataset size: {}\nValidation dataset size: {}".format(len(train_image_paths), len(test_image_paths),len(valid_image_paths)))
+            return train_image_paths,test_image_paths,valid_image_paths,classes
+        else :
+            print("Train dataset size: {}\nTest dataset size: {}".format(len(train_image_paths), len(test_image_paths)))
+            return train_image_paths,test_image_paths,classes
 
 
     def __create_transformators_train_test(self):
@@ -154,7 +156,7 @@ class ConvolutionalNeuralNet():
 
 # 3.3. Get datasets and apply transformers
 
-    def create_datasets(self,train_image_paths,test_image_paths,valid_image_paths,classes):
+    def create_datasets(self,train_image_paths,test_image_paths,classes):
    
         #######################################################
         #                  Create Dataset
@@ -164,12 +166,12 @@ class ConvolutionalNeuralNet():
 
         train_dataset = GenderDataset(train_image_paths,classes,transform=train_tranforms)
         test_dataset = GenderDataset(test_image_paths,classes,transform=test_transforms)
-        valid_dataset = GenderDataset(valid_image_paths,classes,transform=test_transforms) #test transforms are applied
+        #valid_dataset = GenderDataset(valid_image_paths,classes,transform=test_transforms) #test transforms are applied
 
         print('The shape of tensor for 50th image in train dataset: ',train_dataset[49][0].shape)
         print('The label for 50th image in train dataset: ',train_dataset[49][1])
 
-        return train_dataset,test_dataset,valid_dataset
+        return train_dataset,test_dataset
 
 
     #######################################################
@@ -201,7 +203,7 @@ class ConvolutionalNeuralNet():
     #visualize_augmentations(train_dataset,np.random.randint(1,len(train_image_paths)), random_img = True)
 
 
-    def create_data_loader(self,train_dataset,test_dataset,valid_dataset):
+    def create_data_loader(self,train_dataset,test_dataset):
     #######################################################
     #                  Define Dataloaders
     #######################################################
@@ -212,9 +214,9 @@ class ConvolutionalNeuralNet():
         test_loader = DataLoader(
             test_dataset, batch_size=self.batch_size, shuffle=False
         )     
-        valid_loader = DataLoader(
-            valid_dataset, batch_size=self.batch_size, shuffle=True
-        )
+        #valid_loader = DataLoader(
+        #    valid_dataset, batch_size=self.batch_size, shuffle=True
+        #)
 
         #batch of image tensor
         print(next(iter(train_loader))[0].shape)
@@ -225,7 +227,7 @@ class ConvolutionalNeuralNet():
         class_names = test_loader.dataset.classes
         print('Class names:', class_names)
 
-        return train_loader,test_loader,valid_loader
+        return train_loader,test_loader
 
     def get_device(self):
 
@@ -237,40 +239,8 @@ class ConvolutionalNeuralNet():
             print('Running on the CPU')
         return device
 
-    # Defining accuracy function for test dataset
-    def calc_accuracy(self,test_loader:DataLoader,criterion,epoch):
-
-        running_loss = 0.
-        running_corrects = 0
-        test_dataset_size = len(test_loader.dataset)
-        
-        with torch.no_grad():
-            for i,data in enumerate(test_loader):
-                images, labels = data
-                # run the model on the test set to predict labels
-                outputs = self.network(images)
-                # the label with the highest energy will be our prediction            
-                _, predictions = torch.max(outputs.data, 1)
-                loss = criterion(outputs, labels)
-
-                running_loss += loss.item() + labels.size(0)
-                running_corrects += torch.sum(predictions == labels.data)
-
-                if i == 0:
-                    print('[Prediction Result Examples]')
-                    #images = torchvision.utils.make_grid(inputs[:4])
-                    #imshow(images.cpu(), title=[class_names[x] for x in labels[:4]])
-                    #images = torchvision.utils.make_grid(inputs[4:8])
-                    #imshow(images.cpu(), title=[class_names[x] for x in labels[4:8]])
-            # compute the accuracy over all test images
-            epoch_loss = running_loss / test_dataset_size
-            epoch_acc = running_corrects / test_dataset_size * 100.
-            print('[Validation #{}] Loss: {:.4f} Acc: {:.4f}'.format(epoch, epoch_loss, epoch_acc))
-        return epoch_acc
-
-
-    #  defining accuracy function
-    def calc_accuracy2(self,train_dataloader):
+     #  defining accuracy function
+    def calc_accuracy(self,train_dataloader):
         total_correct = 0
         total_instances = 0
         for images, labels in tqdm(train_dataloader,desc="Computing accuracy"):
@@ -300,64 +270,120 @@ class ConvolutionalNeuralNet():
         module.bias.data.fill_(0.01)
 
     
-    # Define the training function
-    def train_kfold(self,model, device, train_loader, optimizer, epoch):
-        model.train()
-        for batch_idx, (data, target) in enumerate(train_loader):
-            data, target = data.to(device), target.to(device)
-            optimizer.zero_grad()
-            output = model(data)
-            loss = nn.functional.nll_loss(output, target)
-            loss.backward()
-            optimizer.step()
-
     # Define train model
-    def train_k_fold(self,train_dataset,test_dataset):
+    def train_k_fold(self,train_dataset,test_dataset,num_epochs:int=10,num_folds:int=5):
         # Initialize the k-fold cross validation
-        kf = KFold(n_splits=5, shuffle=True)
+        kf = KFold(n_splits=num_folds, shuffle=True)
+
+        # Define loss function
+        loss_function = nn.CrossEntropyLoss()
+
+         # For fold results
+        results = {}
+
+        #concatenating Train/Test part; we split later.
+        full_dataset = ConcatDataset([train_dataset, test_dataset])
 
         # Loop through each fold
-        for fold, (train_idx, test_idx) in enumerate(kf.split(train_dataset)):
-            print(f"Fold {fold + 1}")
-            print("-------")
+        for fold, (train_idx, test_idx) in enumerate(kf.split(full_dataset)):
 
-            # Define the data loaders for the current fold
-            train_loader = DataLoader(
-                dataset=train_dataset,
+            # Define the data loaders for the current fold and
+            # sample elements randomly from a given list of ids
+            train_loader = DataLoader (
+                dataset=full_dataset,
                 batch_size=self.batch_size,
                 sampler=torch.utils.data.SubsetRandomSampler(train_idx),
             )
-            test_loader = DataLoader(
-                dataset=test_dataset,
+            test_loader = DataLoader (
+                dataset=full_dataset,
                 batch_size=self.batch_size,
                 sampler=torch.utils.data.SubsetRandomSampler(test_idx),
             )
 
+            # Init network weights
+            self.network.apply(self.init_weights)
+
+
             # Initialize the model and optimizer
-            optimizer = optim.SGD(self.network.parameters(), lr=0.01, momentum=0.5)
+            optimizer = optim.SGD(self.network.parameters(), lr=0.001, momentum=0.9)
 
             # Train the model on the current fold
-            for epoch in range(1, 11):
-                self.train_kfold(self.network, self.device, train_loader, optimizer, epoch)
+            for epoch in range(1, num_epochs):
+                # Print epoch and fold
+                print(f"Fold {fold + 1}, Epoch {epoch}")
+                print("-------")
 
-            # Evaluate the model on the test set
-            self.network.eval()
-            test_loss = 0
-            correct = 0
+                # Set current loss value
+                current_loss = 0.0
+
+                # Iterate over the DataLoader for training data
+                for i, data in enumerate(tqdm(train_loader), 0):
+        
+                    # Get inputs
+                    inputs, targets = data
+        
+                    # Zero the gradients
+                    optimizer.zero_grad()
+        
+                    # Perform forward pass
+                    outputs = self.network(inputs)
+        
+                    # Compute loss
+                    loss = loss_function(outputs, targets)
+        
+                    # Perform backward pass
+                    loss.backward()
+        
+                    # Perform optimization
+                    optimizer.step()
+        
+                    # Print statistics
+                    current_loss += loss.item()
+                    if i % 500 == 499: # print every 500 mini-batches
+                        print('Loss after mini-batch %5d: %.3f' % (i + 1, current_loss / 500))
+                        current_loss = 0.0 # reset current loss to zero
+            
+            # Process is complete.
+            print('Training process has finished. Saving trained model.')
+
+            # Print about testing
+            print('Starting testing')
+    
+            # Saving the model
+            save_path = f'./model-fold-{fold + 1}.pth'
+            torch.save(self.network.state_dict(), save_path)
+
+            # Evaluationfor this fold
+            correct, total = 0, 0
             with torch.no_grad():
-                for data, target in test_loader:
-                    data, target = data.to(self.device), target.to(self.device)
-                    output = self.network(data)
-                    test_loss += nn.functional.nll_loss(output, target, reduction="sum").item()
-                    pred = output.argmax(dim=1, keepdim=True)
-                    correct += pred.eq(target.view_as(pred)).sum().item()
+                # Iterate over the test data and generate predictions
+                for i, data in enumerate(test_loader, 0):
+                    # Get inputs
+                    inputs, targets = data
+                
+                    # Generate outputs
+                    outputs = self.network(inputs)
+                
+                    # Set total and correct
+                    _, predicted = torch.max(outputs.data, 1)
+                    total += targets.size(0)
+                    correct += (predicted == targets).sum().item()
+                    accuracy  = 100.0 * correct / total
+                # Print accuracy
+                print('Accuracy for fold %d: %d %%' % (fold + 1, accuracy))
+                print('--------------------------------')
+                results[fold] = accuracy
+    
+        # Print fold results
+        print(f'K-FOLD CROSS VALIDATION RESULTS FOR {num_folds} FOLDS')
+        print('--------------------------------')
+        sum = 0.0
+        for key, value in results.items():
+            print(f'Fold {key + 1}: {value} %')
+            sum += value
+            print(f'Average: {sum/len(results.items())} %')
 
-            test_loss /= len(test_loader.dataset)
-            accuracy = 100.0 * correct / len(test_loader.dataset)
-
-            # Print the results for the current fold
-            print(f"Test set: Average loss: {test_loss:.4f}, Accuracy: {correct}/{len(test_loader.dataset)} ({accuracy:.2f}%)\n")
-            return [accuracy,test_loss]
+        return results
 
     def train(self,train_loader:DataLoader,test_loader:DataLoader,num_epochs:int=20,model_save_path:str='./best_gender_model.pth'):
 
@@ -419,7 +445,7 @@ class ConvolutionalNeuralNet():
             with torch.no_grad():
                 #  Computing training accuracy
                 
-                training_accuracy = self.calc_accuracy2(train_loader)
+                training_accuracy = self.calc_accuracy(train_loader)
                 log_dict['training_accuracy_per_epoch'].append(training_accuracy)
                 print(f'Training accuracy: {training_accuracy}')
 
@@ -440,7 +466,7 @@ class ConvolutionalNeuralNet():
                     log_dict['test_loss_per_batch'].append(test_loss.item())
 
                 #  Computing accuracy
-                accuracy_test = self.calc_accuracy2(test_loader)
+                accuracy_test = self.calc_accuracy(test_loader)
                 log_dict['test_accuracy_per_epoch'].append(accuracy_test)
                 print(f'Test accuracy: {accuracy_test}')
 

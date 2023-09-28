@@ -109,11 +109,9 @@ function App() {
 
   }
 
-
-
   async function extractFaceFromBox(imageRef, box) {
     const regionsToExtract = [
-      new faceapi.Rect(box.x + 10, box.y - 20 , box.width + 10 , box.height + 20)
+      new faceapi.Rect(box.x + 13 , box.y , box.width -3 , box.height + 13)
     ];
     let faceImages = await faceapi.extractFaces(imageRef, regionsToExtract);
     
@@ -167,7 +165,7 @@ function App() {
   }
 
   return (
-    <Container fluid>
+    <Container >
       <Container style={{ textAlign: 'center', padding: '10px' }}>
         <Container>
           {greeting ? <p>API in online </p>: <p>API in offline </p> }
@@ -209,7 +207,7 @@ function App() {
       }
 
       { capturedImage ? 
-        <Container fluid style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+        <Container>
           <img src={newImgPathBase64} alt='' style={{float:"left", paddingRight: "5px"}}/>
           {prediction ? 
             <span>Predicted as <strong>{prediction.gender}</strong> with a probability of <strong>{Number(prediction.p).toFixed(2)} %</strong>  </span> 
