@@ -15,7 +15,8 @@ from model.classifer import ConvolutionalNeuralNet
 #  Instantiating and loac model
 conv_net = ConvNet()
 model = ConvolutionalNeuralNet(conv_net)
-model.network.load_state_dict(torch.load('./best_gender_model.pth'))
+dir_path = os.path.dirname(os.path.realpath(__file__))
+model.network.load_state_dict(torch.load(dir_path + '/best_gender_model.pth'))
 
 
 # Start Api and add CORS exceptions
@@ -64,7 +65,8 @@ async def upload_file(file: Union[UploadFile, None] = None):
         request_object_content = await file.read()
 
         input_image = Image.open(io.BytesIO(request_object_content)).convert("RGB")
-             
+        input_image.save("test2.jpg")
+
         prediction = model.predict(input_image)
         return JSONResponse(prediction)
 
