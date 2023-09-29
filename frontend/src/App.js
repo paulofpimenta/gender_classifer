@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 function App() {
   
   const [modelsLoaded, setModelsLoaded] = React.useState(false);
-  const [captureVideo, setCaptureVideo] = React.useState(false);
+  const [captureVideoStarted, setCaptureVideoStarted] = React.useState(false);
   const [faceDetected, setFaceDetected] = React.useState(false);
   
   const [capturedImage, setCapturedImage] = React.useState(false);
@@ -41,9 +41,9 @@ function App() {
   }, []);
 
   const startVideo = () => {
-    setCaptureVideo(true);
+    setCaptureVideoStarted(true);
     navigator.mediaDevices
-      .getUserMedia({ video: { width: 300 } })
+      .getUserMedia({ video: {} })
       .then(stream => {
         let video = videoRef.current;
         video.srcObject = stream;
@@ -59,8 +59,8 @@ function App() {
       if (canvasRef && canvasRef.current) {
         canvasRef.current.innerHTML = faceapi.createCanvasFromMedia(videoRef.current);
         const displaySize = {
-          width: videoWidth,
-          height: videoHeight
+          width: videoRef.current.width,
+          height: videoRef.current.height
         }
 
         faceapi.matchDimensions(canvasRef.current, displaySize);
@@ -111,8 +111,9 @@ function App() {
 
   async function extractFaceFromBox(imageRef, box) {
     const regionsToExtract = [
-      new faceapi.Rect(box.x + 13 , box.y , box.width -3 , box.height + 13)
+      new faceapi.Rect(box.x + 13 , box.y - 18 , box.width -13 , box.height + 18)
     ];
+    console.log("Box : ", box)
     let faceImages = await faceapi.extractFaces(imageRef, regionsToExtract);
     
     if (faceImages.length === 0) {
@@ -161,7 +162,7 @@ function App() {
   const closeWebcam = () => {
     videoRef.current.pause();
     videoRef.current.srcObject.getTracks()[0].stop();
-    setCaptureVideo(false);
+    setCaptureVideoStarted(false);
   }
 
   return (
@@ -171,7 +172,7 @@ function App() {
           {greeting ? <p>API in online </p>: <p>API in offline </p> }
         </Container>
         {
-          captureVideo && modelsLoaded ?
+          captureVideoStarted && modelsLoaded ?
             <Button onClick={closeWebcam} style={{ cursor: 'pointer', backgroundColor: 'green', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
               Close Webcam
             </Button>
@@ -187,7 +188,7 @@ function App() {
         
       </Container>
       {
-        captureVideo ?
+        captureVideoStarted ?
           modelsLoaded ?
               <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
                 <video ref={videoRef} height={videoHeight} width={videoWidth} onPlay={handleVideoOnPlay} 
@@ -197,7 +198,7 @@ function App() {
               : <Container >Loading...</Container>
           :<></>
       }
-      {captureVideo ?
+      {captureVideoStarted ?
         <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
           <Button onClick={screenShot} disabled={!faceDetected} style={{ cursor: 'pointer', backgroundColor: 'blue', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
             Detect gender
@@ -207,7 +208,7 @@ function App() {
       }
 
       { capturedImage ? 
-        <Container>
+        <Container fluid>
           <img src={newImgPathBase64} alt='' style={{float:"left", paddingRight: "5px"}}/>
           {prediction ? 
             <span>Predicted as <strong>{prediction.gender}</strong> with a probability of <strong>{Number(prediction.p).toFixed(2)} %</strong>  </span> 
