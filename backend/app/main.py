@@ -6,15 +6,20 @@ from fastapi.responses import JSONResponse
 import torch
 from PIL import Image
 
-# append the path of the parent directory
-import os, sys
+# Append the path of the parent directory
+import os,sys
+
+model_path =  os.path.abspath(os.path.join(__file__ ,"../../../"))
+sys.path.append(model_path)
+print(sys.path)
 
 from model.ConvModel import ConvNet
 from model.classifer import ConvolutionalNeuralNet
 
-#  Instantiating and loac model
+#  Instantiating and load model
 conv_net = ConvNet()
 model = ConvolutionalNeuralNet(conv_net)
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 model.network.load_state_dict(torch.load(dir_path + '/best_gender_model.pth'))
 

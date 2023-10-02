@@ -9,7 +9,6 @@ contourpy==1.1.0
 cryptography==41.0.3
 cycler==0.11.0
 filelock==3.12.2
-Flask==2.3.3
 fonttools==4.41.1
 idna==3.4
 imageio==2.31.1
@@ -54,3 +53,6 @@ tzdata==2023.3
 urllib3==2.0.4
 Werkzeug==2.3.7
 zipp==3.16.2
+uvicorn==0.23.2
+fastapi==0.103.0
+python-multipart==0.0.6

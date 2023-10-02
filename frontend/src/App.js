@@ -20,8 +20,7 @@ const WebcamCapture = () => {
   const [newImgPathBase64, setNewImgPathBase64] = React.useState('')
 
   const videoRef = React.useRef();
-
-  const input = document.getElementById('videoCam')
+  const canvasRef = React.useRef();
 
   React.useEffect(() => {
 
@@ -42,27 +41,33 @@ const WebcamCapture = () => {
 
   const startCamera = async () =>{
     setWebCamEnabled(true);
-    console.log(input)    
+    
     setInterval(async ()=> { 
-      if (input) {
-        console.log("Detected")
-        const displaySize = { width: input.width, height: input.height }
-        // resize the overlay canvas to the input dimensions
-        const canvas = document.getElementById('overlay')
-        faceapi.matchDimensions(canvas, displaySize)
 
-        /* Display detected face bounding boxes */
-        const detection = await faceapi.detectSingleFace(input).withFaceLandmarks()
+      if (canvasRef && canvasRef.current) {
+        canvasRef.current.innerHTML = faceapi.createCanvasFromMedia(videoRef.current);
+         const displaySize = { width: webcamRef.width, height: webcamRef.height}
+      }
+      if (!!webcamRef) {
 
-        // resize the detected boxes in case your displayed image has a different size than the original
-        const resizedDetections = faceapi.resizeResults(detection, displaySize)
-        // draw detections into the canvas
-        faceapi.draw.drawDetections(canvas, resizedDetections)
+          const canvas = faceapi.createCanvasFromMedia(webcamRef.current);
+          // resize the overlay canvas to the input dimensions
 
+          const displaySize = { width: webcamRef.width, height: webcamRef.height }
+          faceapi.matchDimensions(canvas, displaySize)
+
+          /* Display detected face bounding boxes */
+          const detection = await faceapi.detectSingleFace(videoRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks()
+
+          // resize the detected boxes in case your displayed image has a different size than the original
+          const resizedDetections = faceapi.resizeResults(detection, displaySize)
+          // draw detections into the canvas
+          faceapi.draw.drawDetections(canvas, resizedDetections)
       } else {
         setFaceDetected(false)
       }
-    },100)
+    
+    },2000)
   }
 
   const stopCamera = () =>{
@@ -74,7 +79,7 @@ const WebcamCapture = () => {
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
 
-    
+  
 
   }, [webcamRef, setImgSrc]);
 

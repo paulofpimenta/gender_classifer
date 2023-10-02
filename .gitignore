@@ -3,7 +3,7 @@ data/
 __pycache__/*.*
 *.jpg
 .vscode
-
+gender_env/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
