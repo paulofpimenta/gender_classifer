@@ -65,7 +65,6 @@ async def upload_file(file: Union[UploadFile, None] = None):
         request_object_content = await file.read()
 
         input_image = Image.open(io.BytesIO(request_object_content)).convert("RGB")
-        input_image.save("test2.jpg")
 
         prediction = model.predict(input_image)
         return JSONResponse(prediction)
