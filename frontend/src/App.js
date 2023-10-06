@@ -71,9 +71,9 @@ function App() {
         
         const resizedDetections = faceapi.resizeResults(detections, displaySize);
 
-        canvasRef && canvasRef.current && canvasRef.current.getContext('2d').clearRect(0, 0, videoWidth, videoHeight);
-        canvasRef && canvasRef.current && faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
-        canvasRef && canvasRef.current && faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
+        canvasRef.current.getContext('2d').clearRect(0, 0, videoWidth, videoHeight);
+        faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
+        faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
         
         //canvasRef && canvasRef.current && faceapi.draw.drawFaceExpressions(canvasRef.current, resizedDetections);
       }
@@ -90,7 +90,7 @@ function App() {
       
       //Create a new image with the same size of the video cam
       var img = new Image(videoWidth,videoHeight)
-      //Crea a blob
+      //Create a blob
       const blob = await imageCapture.takePhoto();
       var objectURL = URL.createObjectURL(blob);
       // Assign blob to image
@@ -100,7 +100,6 @@ function App() {
       console.log(
         `Width ${detection.imageWidth} and Height ${detection.imageHeight}`
       );
-      console.log("detection : ",img)
       extractFaceFromBox(img, detection.box);
     
     } else {
@@ -122,11 +121,6 @@ function App() {
       const outputImage = new Image();
       //console.log("Face canvas : ",faceImages[0],"imageref :", faceImages)
       outputImage.src = faceImages[0].toDataURL();
-      //faceImages.forEach((cnv) => {
-      //  console.log("Face : ", cnv)
-      //  outputImage.src = cnv.toDataURL();
-      //  setCropped(cnv.toDataURL());
-      //});
       setNewImgPathBase64(outputImage.src);
 
       // Create a blob from cropped image and send to
@@ -140,6 +134,7 @@ function App() {
 
     }
   }
+
 
   const handleSubmission = async (file) => {
     const formData = new FormData()
@@ -165,7 +160,7 @@ function App() {
   }
 
   return (
-    <Container style={{ textAlign: 'center', padding: '10px', scrollMargin:'none'}}>
+    <Container style={{ justifyContent: 'center',textAlign: 'center'}}>
       <Container >
         <Container>
           {greeting ? <p>API in online </p>: <p>API in offline </p> }
@@ -199,9 +194,14 @@ function App() {
       }
       {captureVideo ?
         <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-          <Button onClick={screenShot} disabled={!faceDetected} style={{ cursor: 'pointer', backgroundColor: 'blue', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
-            Detect gender
-          </Button>
+          {faceDetected ?
+            <Container>
+              <Button onClick={screenShot} disabled={!faceDetected} style={{ cursor: 'pointer', backgroundColor: 'blue', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
+                Detect gender
+              </Button>
+            </Container>
+           : <>Waiting for detection...</>
+          }
         </Container>
         : <></>
       }
