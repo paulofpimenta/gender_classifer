@@ -1,6 +1,5 @@
 # import libraries
 
-from sklearn.model_selection import KFold
 import torch
 from torch import optim
 import torchvision
@@ -19,6 +18,7 @@ import glob
 from tqdm import tqdm
 from statistics import mean
 import torch.nn as nn
+from sklearn.model_selection import KFold
 
 import os
 from PIL import Image

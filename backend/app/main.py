@@ -6,11 +6,11 @@ from fastapi.responses import JSONResponse
 import torch
 from PIL import Image
 
-# Append the path of the parent directory
+# Append the path of the model directory
 import os,sys
 model_path =  os.path.abspath(os.path.join(__file__ ,"../../../"))
 sys.path.append(model_path)
-print(sys.path)
+print("Model added at : ",model_path)
 
 from model.ConvModel import ConvNet
 from model.classifer import ConvolutionalNeuralNet
