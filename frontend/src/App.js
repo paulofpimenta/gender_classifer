@@ -43,7 +43,7 @@ function App() {
   const startVideo = () => {
     setCaptureVideo(true);
     navigator.mediaDevices
-      .getUserMedia({ video: { width: 300 } })
+      .getUserMedia({ video: { } })
       .then(stream => {
         let video = videoRef.current;
         video.srcObject = stream;
@@ -193,7 +193,7 @@ function App() {
           :<></>
       }
       {captureVideo ?
-        <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '10px',textAlign:'center' }}>
           {faceDetected ?
             <Container>
               <Button onClick={screenShot} disabled={!faceDetected} style={{ cursor: 'pointer', backgroundColor: 'blue', color: 'white', padding: '15px', fontSize: '25px', border: 'none', borderRadius: '10px' }}>
@@ -202,7 +202,7 @@ function App() {
             </Container>
            : <>Waiting for detection...</>
           }
-        </Container>
+        </div>
         : <></>
       }
 
