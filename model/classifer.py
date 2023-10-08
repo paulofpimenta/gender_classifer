@@ -8,10 +8,8 @@ import torchvision.transforms as transforms
 import torch.nn.functional as F
 from torchvision import transforms
 from torch.utils.data import DataLoader,ConcatDataset
-
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
-
 import matplotlib.pyplot as plt
 from pandas.core.common import flatten
 import copy
@@ -26,8 +24,8 @@ import os
 from PIL import Image
 import torch.nn.functional as nnf
 
-from model.mean_std_loader import StatsFromDataSet
-from model.Dataset import GenderDataset
+from mean_std_loader import StatsFromDataSet
+from Dataset import GenderDataset
 
 
 #######################################################
@@ -41,14 +39,14 @@ class ConvolutionalNeuralNet():
     #A call to Compose will return a transform function that will perform image augmentation.
     #(https://albumentations.ai/docs/getting_started/image_augmentation/)
 
-    def __init__(self,network,root_path='data'):
+    def __init__(self,network,data_path='data'):
       
         # Define parameters
         self.device = self.get_device()
         self.network = network.to(self.device)
 
-        self.train_data_path = root_path + '\\train'
-        self.test_data_path = root_path + '\\test'
+        self.train_data_path = os.path.join(data_path,'train',"")
+        self.test_data_path = os.path.join(data_path,'test',"")
         self.img_width = 224
         self.img_height = 224
         self.batch_size = 32
@@ -99,7 +97,8 @@ class ConvolutionalNeuralNet():
         # eg. train path-> 'images/train/26.Pont_du_Gard/4321ee6695c23c7b.jpg'
         # eg. class -> 26.Pont_du_Gard
         for data_path in glob.glob(self.train_data_path + '/*'):
-            classes.append(data_path.split('\\')[-1]) 
+            # Replace the split by '\\' on windows 
+            classes.append(data_path.split('/')[-1]) 
             train_image_paths.append(glob.glob(data_path + '/*'))
             #1.1. Once images are extracted, we calculate the mean and std per folder/per class
             #1.2. Use the calculated mean and std to call a train transformer per class and apply 
@@ -119,8 +118,8 @@ class ConvolutionalNeuralNet():
 
         #3.# Create the test_image_paths based on test data path
         test_image_paths = []
-        for data_path in glob.glob(self.test_data_path + '\*'):
-            test_image_paths.append(glob.glob(data_path + '\*'))
+        for data_path in glob.glob(self.test_data_path + '/*'):
+            test_image_paths.append(glob.glob(data_path + '/*'))
 
         test_image_paths = list(flatten(test_image_paths))
         random.shuffle(test_image_paths)
@@ -233,7 +232,7 @@ class ConvolutionalNeuralNet():
 
         if torch.cuda.is_available():
             device = torch.device('cuda:0')
-            print('Running on the GPU')
+            print('Running on the GPU using', torch.cuda.get_device_name(0))
         else:
             device = torch.device('cpu')
             print('Running on the CPU')
@@ -256,7 +255,7 @@ class ConvolutionalNeuralNet():
         return round(total_correct/total_instances, 3)
 
     # Define savemode function
-    def save_model(self,path):
+    def save_model(self,path:str='./best_gender_model.pth'):
         torch.save(self.network.state_dict(),path)
 
     
@@ -283,9 +282,22 @@ class ConvolutionalNeuralNet():
 
         #concatenating Train/Test part; we split later.
         full_dataset = ConcatDataset([train_dataset, test_dataset])
+        
+        #  creating log
+        log_dict = {
+            'training_loss_per_batch': [],
+            'test_loss_per_batch': [],
+            'training_accuracy_per_epoch': [],
+            'test_accuracy_per_epoch': []
+        }
+
+        best_accuracy = 0.0
+        running_loss = 0.0
 
         # Loop through each fold
         for fold, (train_idx, test_idx) in enumerate(kf.split(full_dataset)):
+            
+            print("The model will be running on", self.device, "device")
 
             # Define the data loaders for the current fold and
             # sample elements randomly from a given list of ids
@@ -318,9 +330,15 @@ class ConvolutionalNeuralNet():
 
                 # Iterate over the DataLoader for training data
                 for i, data in enumerate(tqdm(train_loader), 0):
-        
+
+                    self.network.to(torch.device(self.device))
+                    
                     # Get inputs
                     inputs, targets = data
+
+                    # Reshape input and target tensor accodingly with the device used
+                    inputs = inputs.to(self.device)
+                    targets = targets.to(self.device)
         
                     # Zero the gradients
                     optimizer.zero_grad()
@@ -330,28 +348,32 @@ class ConvolutionalNeuralNet():
         
                     # Compute loss
                     loss = loss_function(outputs, targets)
-        
+
+                    # Save current loss to log
+                    log_dict['training_loss_per_batch'].append(loss.item())
+                    
                     # Perform backward pass
                     loss.backward()
         
                     # Perform optimization
                     optimizer.step()
-        
+       
                     # Print statistics
                     current_loss += loss.item()
+
                     if i % 500 == 499: # print every 500 mini-batches
                         print('Loss after mini-batch %5d: %.3f' % (i + 1, current_loss / 500))
                         current_loss = 0.0 # reset current loss to zero
             
             # Process is complete.
-            print('Training process has finished. Saving trained model.')
+            training_accuracy = self.calc_accuracy(train_loader)
+            log_dict['training_accuracy_per_epoch'].append(training_accuracy)
 
-            # Print about testing
-            print('Starting testing')
-    
+            print('Training process has finished. Starting testing model...')
+ 
             # Saving the model
-            save_path = f'./model-fold-{fold + 1}.pth'
-            torch.save(self.network.state_dict(), save_path)
+            #save_path = f'./model-fold-{fold + 1}.pth'
+            #torch.save(self.network.state_dict(), save_path)
 
             # Evaluationfor this fold
             correct, total = 0, 0
@@ -360,19 +382,43 @@ class ConvolutionalNeuralNet():
                 for i, data in enumerate(test_loader, 0):
                     # Get inputs
                     inputs, targets = data
+
+                    # Reshape input and target tensor accodingly with the device used
+                    inputs = inputs.to(self.device)
+                    targets = targets.to(self.device)
                 
-                    # Generate outputs
+                    # Generate outputs (predictions)
                     outputs = self.network(inputs)
+
+                    # Computing test loss per batch
+                    test_loss = loss_function(outputs, targets)
+
+                    # Save test loss to log
+                    log_dict['test_loss_per_batch'].append(test_loss.item())
                 
                     # Set total and correct
                     _, predicted = torch.max(outputs.data, 1)
                     total += targets.size(0)
                     correct += (predicted == targets).sum().item()
-                    accuracy  = 100.0 * correct / total
+                    accuracy = 100.0 * correct / total
+                
+                #accuracy_test = self.calc_accuracy(test_loader)
+                log_dict['test_accuracy_per_epoch'].append(accuracy)
+
+                # We want to save the model if the accuracy is the best
+                if accuracy > best_accuracy:
+                    print (f'Model\'s test accuracy ({accuracy}) on fold {fold + 1} is higher than best accuracy ({best_accuracy}). Saving model..')
+                    self.save_model()
+                    best_accuracy = accuracy
+                else :
+                    print (f'Model\'s current accuracy ({accuracy}) on fold{fold + 1} is lower than the best accuracy {best_accuracy}. Model will not be saved')
+                
                 # Print accuracy
                 print('Accuracy for fold %d: %d %%' % (fold + 1, accuracy))
                 print('--------------------------------')
                 results[fold] = accuracy
+
+                
     
         # Print fold results
         print(f'K-FOLD CROSS VALIDATION RESULTS FOR {num_folds} FOLDS')
@@ -383,7 +429,7 @@ class ConvolutionalNeuralNet():
             sum += value
             print(f'Average: {sum/len(results.items())} %')
 
-        return results
+        return log_dict
 
     def train(self,train_loader:DataLoader,test_loader:DataLoader,num_epochs:int=20,model_save_path:str='./best_gender_model.pth'):
 
@@ -493,7 +539,7 @@ class ConvolutionalNeuralNet():
     # Function to test the model with a batch of images and show the labels predictions
     def evaluate_dataset(self,valid_loader:DataLoader,classes,num_images_plot:int=None):
         self.network.eval()
-        loss_function = nn.CrossEntropyLoss()
+        loss_function = nn.CrossEntropyLoss().to('cuda')
 
         # since we're not training, we don't need to calculate the gradients for our outputs
         with torch.no_grad():

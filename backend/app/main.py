@@ -8,7 +8,6 @@ from PIL import Image
 
 # Append the path of the parent directory
 import os,sys
-
 model_path =  os.path.abspath(os.path.join(__file__ ,"../../../"))
 sys.path.append(model_path)
 print(sys.path)

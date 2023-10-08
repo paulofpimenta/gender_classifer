@@ -28,8 +28,8 @@ class GenderDataset(Dataset):
         idx_to_class =  {i:j for i, j in enumerate(self.classes)}
         class_to_idx =  {value:key for key,value in idx_to_class.items()}
         
-        # Replace split char by '/' on unix systems
-        label = image_filepath.split('\\')[-2]
+        # Replace split char by '/' on unix systems and '\\' on windows
+        label = image_filepath.split('/')[-2]
         label = class_to_idx[label]
         if self.transform:
             image = self.transform(image)
