@@ -8,12 +8,12 @@ from PIL import Image
 
 # Append the path of the model directory
 import os,sys
-#model_path =  os.path.abspath(os.path.join(__file__ ,"../../model"))
-#sys.path.append(model_path)
-#print("Model added at : ",model_path)
+model_path =  os.path.abspath(os.path.join(__file__ ,"../../../model"))
+sys.path.append(model_path)
+print("Model added at : ",model_path)
 
-from model.ConvModel import ConvNet
-from model.classifer import ConvolutionalNeuralNet
+from ConvModel import ConvNet
+from classifer import ConvolutionalNeuralNet
 
 #  Instantiating and load model
 conv_net = ConvNet()
