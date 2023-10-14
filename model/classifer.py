@@ -24,9 +24,9 @@ import os
 from PIL import Image
 import torch.nn.functional as nnf
 
-from mean_std_loader import StatsFromDataSet
-from Dataset import GenderDataset
-from ConvModel import ConvNet
+from model.mean_std_loader import StatsFromDataSet
+from model.Dataset import GenderDataset
+from model.ConvModel import ConvNet
 
 
 #######################################################
