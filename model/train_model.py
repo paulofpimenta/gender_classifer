@@ -1,6 +1,6 @@
 from ConvModel import ConvNet
 from classifer import ConvolutionalNeuralNet
-
+import numpy as np
 if __name__ == "__main__":
     
     #  Instantiating model
@@ -16,13 +16,22 @@ if __name__ == "__main__":
     #train_dataloader,test_dataloader = model.create_data_loader(train_dataset,test_dataset)
     # Train model
     #log_dict = model.train(train_loader=train_dataloader,test_loader=test_dataloader,num_epochs=10,model_save_path='./best_gender_model.pth')
-    log_dict = model.train_k_fold(train_dataset,test_dataset,num_epochs=5,num_folds=5)
-    # Plot losses
-    model.plot_losses(log_dict['training_loss_per_batch'],log_dict['test_loss_per_batch'])
-    # Plot accuracy
-    model.plot_accuracy(log_dict['training_accuracy_per_epoch'],log_dict['test_accuracy_per_epoch'])
-    # Let us look at how the network performs on the whole validation dataset.
-    # model.evaluate_dataset(valid_dataloader,classes,7)
-    # Show predictions on random images
+    log_dict = model.train_k_fold(train_dataset,test_dataset,num_epochs=30,num_folds=5)
+    
+    #Extract results for train and val loss and accuracy
+    train_losses_per_fold= [fold['train_loss_per_epoch'] for fold in log_dict]
+    train_acc_per_fold = [fold['train_accuracy_per_epoch'] for fold in log_dict]
 
+    train_losses = [np.mean(k) for k in zip(*train_losses_per_fold)]
+    train_acc = [np.mean(k) for k in zip(*train_acc_per_fold)]
+
+    val_losses_per_fold= [fold['val_loss_per_epoch'] for fold in log_dict]
+    val_acc_per_fold = [fold['val_accuracy_per_epoch'] for fold in log_dict]
+
+    val_losses = [np.mean(k) for k in zip(*val_losses_per_fold)]
+    val_acc = [np.mean(k) for k in zip(*val_acc_per_fold)]
+
+    # Plot losses
+    model.plot_loss_and_accuracy(train_losses,train_acc,val_losses,val_acc)
+    
     print("End")

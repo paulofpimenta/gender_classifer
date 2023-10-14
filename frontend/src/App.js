@@ -184,11 +184,11 @@ function App() {
       {
         captureVideo ?
           modelsLoaded ?
-              <Container style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
-                <video id="video" ref={videoRef} height={videoHeight} width={videoWidth} onPlay={handleVideoOnPlay} 
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '10px' }}>
+                <video autoPlay muted ref={videoRef} height={videoHeight} width={videoWidth} onPlay={handleVideoOnPlay} 
                         style={{ borderRadius: '10px', class:"video-container"}} />
                 <canvas ref={canvasRef} style={{ position: 'absolute' }} />
-              </Container>
+              </div>
               : <Container >Loading...</Container>
           :<></>
       }
