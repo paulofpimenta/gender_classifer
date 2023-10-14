@@ -17,7 +17,7 @@ conv_net = ConvNet()
 model = ConvolutionalNeuralNet(conv_net)
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-model.network.load_state_dict(torch.load(dir_path + '/best_gender_model.pth'))
+model.network.load_state_dict(torch.load(dir_path + '/best_gender_model.pth',map_location=torch.device('cpu')))
 
 
 # Start Api and add CORS exceptions
