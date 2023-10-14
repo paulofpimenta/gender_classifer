@@ -177,7 +177,7 @@ class ConvolutionalNeuralNet():
         train_tranforms,test_transforms = self.__create_transformators_train_test()
 
         train_dataset = GenderDataset(train_image_paths,classes,transform=train_tranforms)
-        test_dataset = GenderDataset(test_image_paths,classes,transform=train_tranforms)
+        test_dataset = GenderDataset(test_image_paths,classes,transform=test_transforms)
         #valid_dataset = GenderDataset(valid_image_paths,classes,transform=test_transforms) #test transforms are applied
 
         print('The shape of tensor for 50th image in train dataset: ',train_dataset[49][0].shape)
@@ -638,26 +638,3 @@ class ConvolutionalNeuralNet():
         plt.xlabel('Epoch')
         plt.legend()
         plt.show(block=True)
-
-if __name__ == "__main__" :
-
-    
-
-    conv_net = ConvNet()
-    model = ConvolutionalNeuralNet(conv_net,data_path='../data')
-    
-    #Extract results for train and test loss and accuracy
-    train_losses_per_fold= [fold['train_loss_per_batch'] for fold in log_dict]
-    train_acc_per_fold = [fold['train_accuracy'] for fold in log_dict]
-
-    train_losses = [np.mean(k) for k in zip(*train_losses_per_fold)]
-    train_acc = [np.mean(k) for k in zip(*train_acc_per_fold)]
-
-    val_losses_per_fold= [fold['val_loss_per_batch'] for fold in log_dict]
-    val_acc_per_fold = [fold['val_accuracy'] for fold in log_dict]
-
-    val_losses = [np.mean(k) for k in zip(*val_losses_per_fold)]
-    val_acc = [np.mean(k) for k in zip(*val_acc_per_fold)]
-
-    # Plot losses
-    model.plot_loss_and_accuracy(train_losses,train_acc,val_losses,val_acc)
