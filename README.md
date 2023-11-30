@@ -1,3 +1,27 @@
-# Certificates
+1. Introduction
 
-Certbot is not declared on docker file (to-do). Instead, the docker file is configured to copy certicates from the `certs` folder from the machine which docker will run, whenever docker runs. The `certs` folder (docker machine) should be placed on the root of the project and contains of the necessary files the application need to validate a cerficate. The certification renew process should be done manually and then, re-run the docker compose file
+The gender detection application is a full-stack web application that allows live gender detection using the web cam. The model used for gender detection was implmented with PyTorch framework. A CNN was trained using a public human faces dataset of more than 50000 images. 
+
+
+2. Architecture
+
+* Docker
+* Model
+* Backend
+* Frontend
+
+2.1. Docker
+
+The applicaion is fully dockeried into a container. The docker compose file defines tree images: Web (Node.js and React), API (FastApi with nginx as a reverse proxy), and Certbot for certifications.
+
+Certicates expires in every three months and will be renewed if the docker compose runs again. There are was, however, to automatize certboot renew via crontab scripts.
+
+2.2. Model
+
+2.3. Backend
+
+2.3. Frontend
+
+3. Installation
+
+4. Limitations
