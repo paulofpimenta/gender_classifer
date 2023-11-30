@@ -38,5 +38,5 @@ services:
       - ./certs:/etc/letsencrypt
     command: certonly --webroot -w /letsencrypt -d app1.ouicodedata.com -d www.app1.ouicodedata.com --force-renew --agree-tos --email pfpimenta@gmail.com
     depends_on:
-      - api
+      - fastapi
       - web
