@@ -47,7 +47,7 @@ class ConvolutionalNeuralNet():
         self.network = network.to(self.device)
 
         self.train_data_path = os.path.join(data_path,'train',"")
-        self.test_data_path = os.path.join(data_path,'test',"")
+        self.test_data_path = os.path.join(data_path,'validation',"")
         self.img_width = img_width
         self.img_height = img_height
         self.batch_size = 32
@@ -90,7 +90,7 @@ class ConvolutionalNeuralNet():
         return train_transforms, test_transforms
 
 
-    def select_images_data_sets(self,extra_test_set=False):
+    def select_images_data_sets(self):
         ####################################################
         #       Create Train, Valid and Test sets
         ####################################################
@@ -137,14 +137,7 @@ class ConvolutionalNeuralNet():
         test_image_paths = list(flatten(test_image_paths))
         random.shuffle(test_image_paths)
 
-        # Create validation set from test dataset, if necessary
-        if extra_test_set : 
-            test_image_paths, valid_image_paths = test_image_paths[:int(0.8*len(test_image_paths))], test_image_paths[int(0.8*len(test_image_paths)):] 
-            print("Train dataset size: {}\nTest dataset size: {}\nValidation dataset size: {}".format(len(train_image_paths), len(test_image_paths),len(valid_image_paths)))
-            return train_image_paths,test_image_paths,valid_image_paths,classes
-        else :
-            print("Train dataset size: {}\nTest dataset size: {}".format(len(train_image_paths), len(test_image_paths)))
-            return train_image_paths,test_image_paths,classes
+        return train_image_paths,test_image_paths,classes
 
 
     def __create_transformators_train_test(self):
