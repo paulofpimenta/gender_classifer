@@ -20,7 +20,7 @@ from PIL import Image
 import torch.nn.functional as nnf
 
 from model.mean_std_loader import StatsFromDataSet
-from model.dataset import GenderDataset
+from model.dataset_loader import GenderDataset
 
 
 #######################################################

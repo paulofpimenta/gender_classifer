@@ -1,4 +1,4 @@
-# Import model module and other libs
+# Run a stand alone version of the model and plot its predictions
 import os
 from model.conv_model import ConvNet
 from model.conv_neural_net import ConvolutionalNeuralNet
@@ -19,9 +19,7 @@ model.network.load_state_dict(torch.load("./best_gender_model.pth"))
 
 # Download sample images
 # urllib.request.urlretrieve("https://pngimg.com/uploads/face/face_PNG11752.png","./data/samples/woman_face.png")
-urllib.request.urlretrieve(
-    "https://pngimg.com/uploads/face/face_PNG11761.png", "./data/samples/man_face.png"
-)
+urllib.request.urlretrieve("https://pngimg.com/uploads/face/face_PNG11761.png", "./data/samples/man_face.png")
 # urllib.request.urlretrieve("https://pngimg.com/uploads/face/face_PNG11760.png","./data/samples/man_face2.png")
 
 # Load image with PIL
