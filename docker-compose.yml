@@ -30,13 +30,15 @@ services:
     links:
       - "fastapi" 
   
-  certbot:
-    container_name: "certbot"
-    image: certbot/certbot
-    volumes:
-      - .:/letsencrypt
-      - ./certs:/etc/letsencrypt
-    command: certonly --webroot -w /letsencrypt -d app1.ouicodedata.com -d www.app1.ouicodedata.com --force-renew --agree-tos --email pfpimenta@gmail.com
-    depends_on:
-      - fastapi
-      - web
+  # Uncomment and run yml to renew certificate
+  
+  # certbot:
+  #   container_name: "certbot"
+  #   image: certbot/certbot
+  #   volumes:
+  #     - .:/letsencrypt
+  #     - ./certs:/etc/letsencrypt
+  #   command: certonly --webroot -w /letsencrypt -d app1.ouicodedata.com -d www.app1.ouicodedata.com --force-renew --agree-tos --email pfpimenta@gmail.com
+  #   depends_on:
+  #     - fastapi
+  #     - web
