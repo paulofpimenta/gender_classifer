@@ -69,6 +69,7 @@ threadpoolctl==3.2.0
 tifffile==2023.7.18
 torch==2.0.1
 torchaudio==2.0.2
+torchsummary==1.5.1
 torchvision==0.15.2
 tqdm==4.65.0
 triton==2.0.0
@@ -77,4 +78,5 @@ tzdata==2023.3
 urllib3==2.0.4
 uvicorn==0.23.2
 Werkzeug==2.3.7
+wget==3.2
 zipp==3.16.2
