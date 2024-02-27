@@ -4,6 +4,7 @@ __pycache__/*.*
 *.jpg
 .vscode
 gender_env/
+.env
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
