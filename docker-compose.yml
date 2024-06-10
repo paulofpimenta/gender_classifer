@@ -23,8 +23,8 @@ services:
       - 443:443
     volumes:
       - ./frontend:/usr/src/app
-      - .:/letsencrypt # for certboot challenges
-      - ./certs:/etc/letsencrypt # for letsencrypt certificates
+      - ./certbot/conf:/etc/letsencrypt # for certboot challenges
+      - ./certbot/conf:/var/wwww/certbot # for letsencrypt certificates
       - ./etc/ssl/certs:/etc/ssl/certs
     #links:
       #- "fastapi" 
@@ -33,9 +33,9 @@ services:
     container_name: "certbot"
     image: certbot/certbot
     volumes:
-      - .:/letsencrypt
-      - ./certs:/etc/letsencrypt
-    #command: certonly --webroot -w /letsencrypt -d ${DOMAIN1} -d ${DOMAIN2} --force-renew --agree-tos --email ${EMAIL}
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/wwww/certbot -d ${DOMAIN1} -d ${DOMAIN2} --force-renew --agree-tos --email ${EMAIL}
     #depends_on:
       #- fastapi
     #  - web
