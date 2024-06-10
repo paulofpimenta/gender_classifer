@@ -11,7 +11,9 @@ services:
       - 8000:8000
     volumes:
       - ./backend:/usr/src/app
-      - ./certbot/www:/var/www/certbot # for letsencrypt certificates
+      - ./certbot/www:/var/www/certbot 
+    depends_on:
+      - certbot
 
   web:
     container_name: "web"
@@ -38,4 +40,4 @@ services:
     command: certonly --webroot -w /var/www/certbot -d ${DOMAIN1} --force-renew --agree-tos --email ${EMAIL}
     #depends_on:
       #- fastapi
-    #  - web
+      #  - web
