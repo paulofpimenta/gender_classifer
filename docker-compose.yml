@@ -26,8 +26,8 @@ services:
       - .:/letsencrypt # for certboot challenges
       - ./certs:/etc/letsencrypt # for letsencrypt certificates
       - ./etc/ssl/certs:/etc/ssl/certs
-    links:
-      - "fastapi" 
+    #links:
+      #- "fastapi" 
   
   certbot:
     container_name: "certbot"
@@ -37,5 +37,5 @@ services:
       - ./certs:/etc/letsencrypt
     command: certonly --webroot -w /letsencrypt -d ${DOMAIN1} -d ${DOMAIN2} --force-renew --agree-tos --email ${EMAIL}
     depends_on:
-      - fastapi
+      #- fastapi
       - web
