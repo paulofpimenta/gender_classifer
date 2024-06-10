@@ -1,7 +1,7 @@
 version: "3.9"
 name: gender-classifier
 
-# services:
+services:
 #   fastapi:
 #     container_name: "fastapi"
 #     build:
@@ -11,8 +11,7 @@ name: gender-classifier
 #       - 8000:8000
 #     volumes:
 #       - ./backend:/usr/src/app
-#       - ./certs:/etc/letsencrypt
-    
+#       - ./certs:/etc/letsencrypt   
 
   web:
     container_name: "web"
