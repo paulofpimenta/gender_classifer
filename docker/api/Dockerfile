@@ -16,7 +16,7 @@ RUN pip install --upgrade pip && \
 
 COPY ./backend/app /usr/src/gender_detect
 COPY ./model/ /usr/src/gender_detect/model
-#COPY ./certs/ /etc/letsencrypt
+COPY ./certbot/conf /etc/letsencrypt
 
 ENV PYTHONPATH="/usr/src/gender_detect"
 
