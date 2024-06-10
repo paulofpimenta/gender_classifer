@@ -25,7 +25,7 @@ services:
       - ./frontend:/usr/src/app
       - ./certbot/conf:/etc/letsencrypt # for certboot challenges
       - ./certbot/conf:/var/wwww/certbot # for letsencrypt certificates
-      - ./etc/ssl/certs:/etc/ssl/certs
+      #- ./etc/ssl/certs:/etc/ssl/certs
     #links:
       #- "fastapi" 
   
