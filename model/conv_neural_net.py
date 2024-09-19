@@ -1,14 +1,11 @@
 """Module providing a function printing python version."""
 import glob
-import copy
 import random
 import torch
 from torch import optim
 import torchvision
 from torchvision import transforms
 from torch.utils.data import DataLoader
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
 import matplotlib.pyplot as plt
 from pandas.core.common import flatten
 import numpy as np
@@ -195,35 +192,6 @@ class ConvolutionalNeuralNet:
     #                  Visualize Dataset
     #         Images are plotted after augmentation
     #######################################################
-
-    def visualize_augmentations(
-        dataset, classes, train_image_paths, idx=0, samples=10, cols=5, random_img=False
-    ):
-        dataset = copy.deepcopy(dataset)
-        # we remove the normalize and tensor conversion from our augmentation pipeline
-        dataset.transform = A.Compose(
-            [
-                t
-                for t in dataset.transform
-                if not isinstance(t, (A.Normalize, ToTensorV2))
-            ]
-        )
-        rows = samples // cols
-        idx_to_class = {i: j for i, j in enumerate(classes)}
-
-        figure, ax = plt.subplots(nrows=rows, ncols=cols, figsize=(12, 8))
-        for i in range(samples):
-            if random_img:
-                idx = np.random.randint(1, len(train_image_paths))
-            image, lab = dataset[idx]
-            ax.ravel()[i].imshow(image)
-            ax.ravel()[i].set_axis_off()
-            ax.ravel()[i].set_title(idx_to_class[lab])
-        plt.tight_layout(pad=1)
-        plt.show()
-
-    # visualize_augmentations(train_dataset,np.random.randint(1,len(train_image_paths)), random_img = True)
-
     def create_data_loader(self, train_dataset, test_dataset):
         #######################################################
         #                  Define Dataloaders
