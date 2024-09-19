@@ -16,7 +16,7 @@ model = ConvolutionalNeuralNet(conv_net)
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 model.network.load_state_dict(
-    torch.load(dir_path + "/best_gender_model.pth", map_location=torch.device("cpu"))
+    torch.load(dir_path + "/best_gender_model.pth", map_location=torch.device("cpu"),weights_only=True)
 )
 
 
